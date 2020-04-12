@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="button_keyboard_padding">20dp</dimen>
+
+    <dimen name="form_cell_height">40dp</dimen>
+    <dimen name="cell_radius_large">20dp</dimen>
+    <dimen name="cell_quantity_width">35dp</dimen>
+    <dimen name="label_width">100dp</dimen>
+    <dimen name="field_width">300dp</dimen>
+    <dimen name="left_pane_width">340dp</dimen>
+    <dimen name="left_mid_pane_width">600dp</dimen>
+    <dimen name="dialog_password_width">450dp</dimen>
+    <dimen name="dialog_password_view_height">70dp</dimen>
+
+    <dimen name="no_distance">0dp</dimen>
+    <dimen name="distance_x_small">1dp</dimen>
+    <dimen name="distance_small">5dp</dimen>
+    <dimen name="distance_med">10dp</dimen>
+    <dimen name="distance_large">20dp</dimen>
+    <dimen name="distance_quantity">25dp</dimen>
+    <dimen name="distance_title">25dp</dimen>
+
+
+    <dimen name="cell_height">50dp</dimen>
+
+    <dimen name="text_size_small">10sp</dimen>
+    <dimen name="text_size_med">15sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
+
+</resources>

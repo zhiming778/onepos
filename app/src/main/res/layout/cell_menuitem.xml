@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minLines="2"
+    android:layout_marginStart="@dimen/distance_x_small"
+    android:layout_marginEnd="@dimen/distance_x_small"
+    android:layout_marginTop="@dimen/distance_small"
+    android:layout_marginBottom="@dimen/distance_small"
+    android:id="@+id/tv_menuitem"
+    tools:text="@string/test_text"
+    android:textSize="@dimen/text_size_med"
+    android:textAlignment="center"
+    android:background="@drawable/underline"
+    />

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs_modifier"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/cell_height"
+        app:tabSelectedTextColor="@color/colorMain"
+        app:tabRippleColor="@null"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/distance_x_small"
+        style="@style/CustomButton"
+        android:text="@string/btn_plus"
+        android:id  ="@+id/btn_plus"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/distance_x_small"
+        android:layout_marginEnd="@dimen/distance_x_small"
+        style="@style/CustomButton"
+        android:layout_toEndOf="@id/btn_plus"
+        android:text="@string/btn_minus"
+        android:id="@+id/btn_minus"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/distance_x_small"
+        style="@style/CustomButton"
+        android:layout_toEndOf="@id/btn_minus"
+        android:id="@+id/btn_discount"
+        android:text="@string/btn_discount"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btn_plus"
+        android:layout_below="@id/tabs_modifier"
+        android:id="@+id/rv_modifier"/>
+
+</RelativeLayout>

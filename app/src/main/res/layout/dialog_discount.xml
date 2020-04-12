@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/distance_med"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/distance_med"
+        android:textSize="@dimen/text_size_med"
+        android:text="@string/label_discount_type"
+        />
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/rg_discount_type"
+        android:layout_gravity="center_horizontal"
+        android:checkedButton="@id/rb_discount_item"
+        >
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CustomRadioButton"
+            android:layout_marginEnd="@dimen/distance_small"
+            android:id="@+id/rb_discount_order"
+            android:text="@string/btn_discount_type_order"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CustomRadioButton"
+            android:id="@+id/rb_discount_item"
+            android:text="@string/btn_discount_type_item"
+            />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/distance_med"
+        android:layout_marginBottom="@dimen/distance_med"
+        android:textSize="@dimen/text_size_med"
+        android:text="@string/label_discount_percentage"
+        />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/rg_discount_percentage"
+        />
+</LinearLayout>

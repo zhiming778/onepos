@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.activity.MainActivity">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/distance_large"
+        style="@style/CustomButton"
+        android:id="@+id/btn_pickup"
+        android:text="Pick Up"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/distance_large"
+        style="@style/CustomButton"
+        android:id="@+id/btn_delivery"
+        android:text="Delivery"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/distance_large"
+        style="@style/CustomButton"
+        android:id="@+id/btn_walk_in"
+        android:text="Walk In"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/distance_large"
+        style="@style/CustomButton"
+        android:id="@+id/btn_office"
+        android:text="Office"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/distance_large"
+        style="@style/CustomButton"
+        android:id="@+id/btn_punch_in"
+        android:text="@string/btn_punch_in"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/distance_large"
+        style="@style/CustomButton"
+        android:id="@+id/btn_punch_out"
+        android:text="@string/btn_punch_out"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/distance_large"
+        style="@style/CustomButton"
+        android:id="@+id/btn_modify"
+        android:text="@string/btn_modify"
+        />
+</LinearLayout>

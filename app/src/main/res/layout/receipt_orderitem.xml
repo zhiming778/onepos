@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/distance_med"
+    android:orientation="horizontal"
+    >
+    <TextView
+        android:layout_width="@dimen/distance_quantity"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_quantity"
+        android:textSize="@dimen/text_size_large"
+        android:textColor="@color/colorQuantity"
+        tools:text="33"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/tv_price"
+        android:textSize="@dimen/text_size_large"
+        tools:text="44.44" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/tv_quantity"
+        android:layout_toStartOf="@id/tv_price"
+        android:id="@+id/tv_name"
+        android:textSize="@dimen/text_size_large"
+        tools:text="ffffffffffffffffffff"
+        />
+</RelativeLayout>

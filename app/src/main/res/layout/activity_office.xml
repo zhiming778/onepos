@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.activity.OfficeActivity">
+
+    <ListView
+        android:layout_width="@dimen/left_pane_width"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/distance_small"
+        android:id="@+id/lv_navi"
+        />
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/cell_height"
+        android:layout_toEndOf="@id/lv_navi"
+        android:layout_marginBottom="@dimen/distance_small"
+        android:id="@+id/toolbar"
+        android:layout_alignParentEnd="true"
+        app:titleTextColor="@color/colorWhiteText"
+        android:background="@color/colorMain"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/lv_navi"
+        android:layout_below="@id/toolbar"
+        android:id="@+id/fragment_container"
+        />
+</RelativeLayout>

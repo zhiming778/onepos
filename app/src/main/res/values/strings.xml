@@ -1,0 +1,202 @@
+<resources>
+    <string name="app_name">OnePos</string>
+    <string name="test_text">text text</string>
+    <string name="test_text_number" translatable="false">33</string>
+    <string name="test_text_number_price" translatable="false">33.33</string>
+    <string name="def_tax_rate" translatable="false">7.25</string>
+    <string name="def_string_value" translatable="false">@null</string>
+    <string name="def_permission_level" translatable="false">4</string>
+
+    <string name="key_tax_rate">key_tax_rate</string>
+    <string name="key_permission_discount">key_permission_discount</string>
+    <string name="key_permission_setting">key_permission_setting</string>
+    <string name="key_permission_log">key_permission_log</string>
+    <string name="key_permission_dine_in">key_permission_dine_in</string>
+    <string name="key_permission_modify_order">key_permission_modify_order</string>
+    <string name="key_restaurant_address">key_restaurant_address</string>
+    <string name="key_restaurant_phone">key_restaurant_phone</string>
+    <string name="key_restaurant_name">key_restaurant_name</string>
+
+
+    <string name="title_permission_modify_order">Modify Order</string>
+    <string name="title_permission_discount">Discount</string>
+    <string name="title_permission_setting">Setting</string>
+    <string name="title_permission_log">Log</string>
+    <string name="title_permission_dine_in">Dine In</string>
+    <string name="title_tax_rate" translatable="false">Tax Rate(%)</string>
+    <string name="title_restaurant_address">Restaurant Address</string>
+    <string name="title_restaurant_phone">Restaurant Phone#</string>
+    <string name="title_restaurant_name">Restaurant Name</string>
+    <string name="title_new_staff">New Staff</string>
+    <string name="title_password_dialog">Please Enter Your Password</string>
+    <string name="title_choose_birth">Choose Date of Birth</string>
+    <string name="title_choose_address">Choose An Address</string>
+
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_print">Print</string>
+    <string name="btn_modifier">Modifier</string>
+    <string name="btn_pay">Pay</string>
+    <string name="btn_plus">+</string>
+    <string name="btn_minus">-</string>
+    <string name="btn_punch_in">Punch In</string>
+    <string name="btn_punch_out">Punch Out</string>
+    <string name="btn_modify">Modify</string>
+    <string name="btn_discount">Discount</string>
+    <string name="btn_create_staff">Create Staff</string>
+    <string name="btn_delete_staff">Delete Staff</string>
+    <string name="btn_new_address">New Address</string>
+    <string name="btn_confirm">Confirm</string>
+    <string name="btn_edit_staff">Edit Staff</string>
+    <string name="btn_return">&lt;---</string>
+    <string name="btn_discount_type_order">Order</string>
+    <string name="btn_discount_type_item">This item</string>
+
+
+    <string name="format_currency" translatable="false">%.2f</string>
+    <string name="format_discount" translatable="false">(-%d%%)</string>
+
+    <string name="format_menuitem_without_discount" translatable="false">-%2.2dX -%20.20s%7.2f</string>
+
+
+    <string name="label_phone_number">Tel#</string>
+    <string name="label_name">Name</string>
+    <string name="label_birth">Date of Birth</string>
+    <string name="label_street">Street</string>
+    <string name="label_address">Address</string>
+    <string name="label_password">Password</string>
+    <string name="label_title">Title</string>
+    <string name="label_ssn">SSN</string>
+    <string name="label_apt_rm">Apt/RM</string>
+    <string name="label_zipcode">Zipcode</string>
+    <string name="label_city">City</string>
+    <string name="label_delivery_instruction">Delivery Instruction</string>
+    <string name="label_order_history">Order History</string>
+    <string name="label_total">Total:</string>
+    <string name="label_tax">Tax:</string>
+    <string name="label_subtotal">Subtotal:</string>
+    <string name="label_discount_percentage">Percentage Discount</string>
+    <string name="label_discount_type">Discount Type</string>
+
+
+    <string name="msg_empty_order">Empty order can\'t be created</string>
+    <string name="msg_invalid_field">Error: there is an invalid field.</string>
+    <string name="msg_punch_in">Punch in successful.</string>
+    <string name="msg_punch_in_error">Failed to punch in.</string>
+    <string name="msg_punch_out">Punch out successful.</string>
+    <string name="msg_punch_out_error">Failed to punch out.</string>
+
+    <string name="keyboard_q" translatable="false">q</string>
+    <string name="keyboard_w" translatable="false">w</string>
+    <string name="keyboard_e" translatable="false">e</string>
+    <string name="keyboard_r" translatable="false">r</string>
+    <string name="keyboard_t" translatable="false">t</string>
+    <string name="keyboard_y" translatable="false">y</string>
+    <string name="keyboard_u" translatable="false">u</string>
+    <string name="keyboard_i" translatable="false">i</string>
+    <string name="keyboard_o" translatable="false">o</string>
+    <string name="keyboard_p" translatable="false">p</string>
+    <string name="keyboard_a" translatable="false">a</string>
+    <string name="keyboard_s" translatable="false">s</string>
+    <string name="keyboard_d" translatable="false">d</string>
+    <string name="keyboard_f" translatable="false">f</string>
+    <string name="keyboard_g" translatable="false">g</string>
+    <string name="keyboard_h" translatable="false">h</string>
+    <string name="keyboard_j" translatable="false">j</string>
+    <string name="keyboard_k" translatable="false">k</string>
+    <string name="keyboard_l" translatable="false">l</string>
+    <string name="keyboard_z" translatable="false">z</string>
+    <string name="keyboard_x" translatable="false">x</string>
+    <string name="keyboard_c" translatable="false">c</string>
+    <string name="keyboard_v" translatable="false">v</string>
+    <string name="keyboard_b" translatable="false">b</string>
+    <string name="keyboard_n" translatable="false">n</string>
+    <string name="keyboard_m" translatable="false">m</string>
+    <string name="keyboard_1" translatable="false">1</string>
+    <string name="keyboard_2" translatable="false">2</string>
+    <string name="keyboard_3" translatable="false">3</string>
+    <string name="keyboard_4" translatable="false">4</string>
+    <string name="keyboard_5" translatable="false">5</string>
+    <string name="keyboard_6" translatable="false">6</string>
+    <string name="keyboard_7" translatable="false">7</string>
+    <string name="keyboard_8" translatable="false">8</string>
+    <string name="keyboard_9" translatable="false">9</string>
+    <string name="keyboard_0" translatable="false">0</string>
+    <string name="keyboard_backspace" translatable="false">Backspace</string>
+    <string name="keyboard_space" translatable="false">Space</string>
+
+
+
+
+    <string-array name="navi_items">
+        <item>Restaurant Info</item>
+        <item>Staff</item>
+        <item>Reports and Logs</item>
+        <item>Printers</item>
+        <item>Payment Types</item>
+        <item>Receipt</item>
+        <item>Permission</item>
+    </string-array>
+
+    <string-array name="main_buttons">
+        <item>Dine In</item>
+        <item>Pick Up</item>
+        <item>Walk In</item>
+        <item>Delivery</item>
+        <item>Modify</item>
+        <item>Void</item>
+        <item>Refund</item>
+        <item>Gift Card</item>
+        <item>Time Card</item>
+        <item>Office</item>
+        <item>Exit</item>
+    </string-array>
+
+    <string-array name="staff_titles">
+        <item>Chef</item>
+        <item>Server</item>
+        <item>Cashier</item>
+        <item>Manager</item>
+        <item>owner</item>
+    </string-array>
+    <string-array name="staff_titles_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="discount_percentage">
+        <item>No Discount</item>
+        <item>10%</item>
+        <item>20%</item>
+        <item>30%</item>
+        <item>50%</item>
+        <item>70%</item>
+        <item>90%</item>
+        <item>Free</item>
+    </string-array>
+    <string-array name="payment_types">
+        <item>Not Paid</item>
+        <item>Cash</item>
+        <item>Visa</item>
+        <item>Master Card</item>
+        <item>Discover</item>
+        <item>Amex</item>
+        <item>Mobile Pay</item>
+        <item>Check</item>
+    </string-array>
+    <string-array name="order_types">
+        <item>Dine In</item>
+        <item>Walk In</item>
+        <item>Pick Up</item>
+        <item>Delivery</item>
+    </string-array>
+    <string-array name="modifier_types">
+        <item>SIDE</item>
+        <item>ADD</item>
+        <item>NO</item>
+        <item>REPLACE</item>
+        <item>COOK</item>
+    </string-array>
+
+</resources>

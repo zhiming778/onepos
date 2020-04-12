@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/distance_med"
+    android:paddingEnd="@dimen/distance_med"
+    android:paddingTop="@dimen/distance_med"
+    >
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/btn_order_type"
+        tools:text="@string/test_text"
+        />
+
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/btn_order_type"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/FormLabel"
+        android:id="@+id/tv_phone_num"
+        android:labelFor="@id/et_phone_num"
+        android:text="@string/label_phone_number" />
+    <EditText
+        app:layout_constraintStart_toEndOf="@id/tv_phone_num"
+        app:layout_constraintTop_toBottomOf="@id/btn_order_type"
+        style="@style/FormField"
+        android:id="@+id/et_phone_num"
+        android:maxLength="12"
+        android:inputType="none"/>
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/tv_phone_num"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/FormLabel"
+        android:id="@+id/tv_name"
+        android:labelFor="@id/et_name"
+        android:text="@string/label_name" />
+
+    <EditText
+        app:layout_constraintStart_toEndOf="@id/tv_phone_num"
+        app:layout_constraintTop_toBottomOf="@id/et_phone_num"
+        style="@style/FormField"
+        android:id="@+id/et_name"
+        android:inputType="textPersonName|textNoSuggestions" />
+    <Button
+        android:layout_width="@dimen/label_width"
+        android:layout_height="@dimen/form_cell_height"
+        app:layout_constraintTop_toBottomOf="@id/tv_name"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/btn_street"
+        android:labelFor="@id/et_street"
+        android:text="@string/label_street" />
+
+    <EditText
+        app:layout_constraintStart_toEndOf="@id/btn_street"
+        app:layout_constraintTop_toBottomOf="@id/et_name"
+        style="@style/FormField"
+        android:id="@+id/et_street"
+        android:inputType="textNoSuggestions" />
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/btn_street"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/FormLabel"
+        android:id="@+id/tv_apt_rm"
+        android:labelFor="@id/et_apt_rm"
+        android:text="@string/label_apt_rm" />
+
+    <EditText
+        android:layout_width="100dp"
+        app:layout_constraintStart_toEndOf="@id/tv_apt_rm"
+        app:layout_constraintTop_toBottomOf="@id/et_street"
+        style="@style/FormField"
+        android:id="@+id/et_apt_rm"
+        android:inputType="textNoSuggestions" />
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/et_street"
+        app:layout_constraintStart_toEndOf="@id/et_apt_rm"
+        style="@style/FormLabel"
+        android:id="@+id/tv_zipcode"
+        android:labelFor="@id/et_zipcode"
+        android:text="@string/label_zipcode" />
+
+    <EditText
+        style="@style/FormField"
+        android:layout_width="100dp"
+        android:id="@+id/et_zipcode"
+        android:inputType="number"
+        android:maxLength="5"
+        app:layout_constraintStart_toEndOf="@id/tv_zipcode"
+        app:layout_constraintTop_toBottomOf="@id/et_street" />
+
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/tv_apt_rm"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/FormLabel"
+        android:id="@+id/tv_city"
+        android:labelFor="@id/et_city"
+        android:text="@string/label_city" />
+
+    <EditText
+        app:layout_constraintStart_toEndOf="@id/tv_city"
+        app:layout_constraintTop_toBottomOf="@id/et_apt_rm"
+        style="@style/FormField"
+        android:id="@+id/et_city"
+        android:inputType="textNoSuggestions" />
+    <TextView
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_city"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/FormLabel"
+        android:id="@+id/tv_instruction"
+        android:labelFor="@id/et_instruction"
+        android:text="@string/label_delivery_instruction" />
+    <EditText
+        android:layout_height="80dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_instruction"
+        style="@style/FormField"
+        android:id="@+id/et_instruction"
+        android:inputType="textNoSuggestions" />
+
+    <com.example.onepos.view.CustomKeyboard
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_instruction"
+        android:id="@+id/keyboard"
+        />
+
+    <TextView
+        android:layout_width="400dp"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/label_order_history"
+        android:id="@+id/tv_history"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="400dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_history"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/rv_history"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/rv_history"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/btn_cancel"
+        android:text="@string/btn_cancel" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/rv_history"
+        app:layout_constraintEnd_toStartOf="@id/btn_cancel"
+        android:id="@+id/btn_confirm"
+        android:text="@string/btn_confirm" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

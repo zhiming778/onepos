@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="@string/key_restaurant_name"
+        android:defaultValue="@null"
+        android:title="@string/title_restaurant_name"
+        />
+    <EditTextPreference
+        android:key="@string/key_restaurant_address"
+        android:defaultValue="@null"
+        android:title="@string/title_restaurant_address"
+        />
+    <EditTextPreference
+        android:key="@string/key_restaurant_phone"
+        android:defaultValue="@null"
+        android:title="@string/title_restaurant_phone"
+        />
+    <EditTextPreference
+        android:key="@string/key_tax_rate"
+        android:defaultValue="@string/def_tax_rate"
+        android:title="@string/title_tax_rate"
+        />
+</PreferenceScreen>

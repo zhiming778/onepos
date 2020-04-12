@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#0FACF3</color>
+    <color name="colorRVBackground">#000000</color>
+    <color name="colorTextColor">#000000</color>
+    <color name="colorModeOld">#66f</color>
+    <color name="colorModeDeleted">#f66</color>
+
+    <color name="colorBackground">#F4F6F8</color>
+    <color name="colorWidgetBackground">#FFFFFF</color>
+    <color name="colorMain">#0FACF3</color>
+    <color name="colorSecondary">#3BBCF4</color>
+    <color name="colorTertiary">#68C9F3</color>
+    <color name="colorText">#485058</color>
+    <color name="colorWhiteText">#FFFFFF</color>
+    <color name="colorComment">#E2E5E8</color>
+    <color name="colorUnderline">@color/colorComment</color>
+    <color name="colorSelected">@color/colorTertiary</color>
+    <color name="colorUnselected">@color/colorMain</color>
+    <color name="colorQuantity">@color/colorModeDeleted</color>
+
+</resources>

@@ -1,0 +1,133 @@
+<resources>
+    <string name="app_name">OnePos</string>
+    <string name="test_text">测试 测试</string>
+
+    <string name="key_tax_rate">key_tax_rate</string>
+    <string name="key_permission_discount">key_permission_discount</string>
+    <string name="key_permission_setting">key_permission_setting</string>
+    <string name="key_permission_log">key_permission_log</string>
+    <string name="key_permission_dine_in">key_permission_dine_in</string>
+    <string name="key_permission_modify_order">key_permission_modify_order</string>
+    <string name="key_restaurant_address">key_restaurant_address</string>
+    <string name="key_restaurant_phone">key_restaurant_phone</string>
+    <string name="key_restaurant_name">key_restaurant_name</string>
+
+
+    <string name="title_permission_modify_order">修改订单权限</string>
+    <string name="title_permission_discount">折扣权限</string>
+    <string name="title_permission_setting">设置权限</string>
+    <string name="title_permission_log">日志权限</string>
+    <string name="title_permission_dine_in">堂食权限</string>
+    <string name="title_restaurant_address">餐厅地址</string>
+    <string name="title_restaurant_phone">餐厅电话</string>
+    <string name="title_restaurant_name">餐厅名字</string>
+    <string name="title_new_staff">新员工</string>
+    <string name="title_password_dialog">请输入密码</string>
+    <string name="title_choose_birth">请选择生日</string>
+    <string name="title_choose_address">请选择地址</string>
+
+    <string name="btn_cancel">取消</string>
+    <string name="btn_print">打印</string>
+    <string name="btn_modifier">修改</string>
+    <string name="btn_pay">付款</string>
+    <string name="btn_plus">+</string>
+    <string name="btn_minus">-</string>
+    <string name="btn_punch_in">打卡上班</string>
+    <string name="btn_punch_out">打卡下班</string>
+    <string name="btn_modify">修改</string>
+    <string name="btn_discount">折扣</string>
+    <string name="btn_create_staff">创建员工</string>
+    <string name="btn_delete_staff">删除员工</string>
+    <string name="btn_new_address">新地址</string>
+    <string name="btn_confirm">确认</string>
+    <string name="btn_edit_staff">编辑员工</string>
+    <string name="btn_return">&lt;---</string>
+    <string name="btn_discount_type_order">订单</string>
+    <string name="btn_discount_type_item">本项目</string>
+
+
+    <string name="label_phone_number">电话</string>
+    <string name="label_name">姓名</string>
+    <string name="label_birth">生日</string>
+    <string name="label_street">街道</string>
+    <string name="label_address">地址</string>
+    <string name="label_password">密码</string>
+    <string name="label_title">职务</string>
+    <string name="label_ssn">社安号</string>
+    <string name="label_apt_rm">房号</string>
+    <string name="label_zipcode">邮编</string>
+    <string name="label_city">城市</string>
+    <string name="label_delivery_instruction">外送说明</string>
+    <string name="label_order_history">订单历史</string>
+    <string name="label_total">总价:</string>
+    <string name="label_tax">税:</string>
+    <string name="label_subtotal">小计:</string>
+    <string name="label_discount_percentage">折扣比例</string>
+    <string name="label_discount_type">折扣类型</string>
+
+
+    <string name="msg_empty_order">无法创建空订单</string>
+    <string name="msg_invalid_field">错误: 某栏填写错误</string>
+    <string name="msg_punch_in">打卡上班成功.</string>
+    <string name="msg_punch_in_error">打卡上班失败.</string>
+    <string name="msg_punch_out">打卡下班成功.</string>
+    <string name="msg_punch_out_error">打卡下班失败.</string>
+
+    <string-array name="navi_items">
+        <item>餐厅信息</item>
+        <item>员工</item>
+        <item>报告和日志</item>
+        <item>打印机</item>
+        <item>付款方式</item>
+        <item>收据</item>
+        <item>权限</item>
+    </string-array>
+
+    <string-array name="main_buttons">
+        <item>堂食</item>
+        <item>来取</item>
+        <item>柜台</item>
+        <item>外送</item>
+        <item>修改</item>
+        <item>取消</item>
+        <item>退款</item>
+        <item>礼物卡</item>
+        <item>打卡</item>
+        <item>办公</item>
+        <item>退出</item>
+    </string-array>
+
+    <string-array name="staff_titles">
+        <item>厨师</item>
+        <item>服务生</item>
+        <item>收银</item>
+        <item>经理</item>
+        <item>老板</item>
+    </string-array>
+
+
+    <string-array name="payment_types">
+        <item>未付</item>
+        <item>现金</item>
+        <item>Visa</item>
+        <item>Master Card</item>
+        <item>Discover</item>
+        <item>Amex</item>
+        <item>移动支付</item>
+        <item>支票</item>
+    </string-array>
+    <string-array name="order_types">
+        <item>堂食</item>
+        <item>柜台</item>
+        <item>来取</item>
+        <item>外送</item>
+    </string-array>
+    <string-array name="modifier_types">
+        <item>副菜</item>
+        <item>添加</item>
+        <item>不要</item>
+        <item>替换</item>
+        <item>烹调</item>
+    </string-array>
+
+</resources>
