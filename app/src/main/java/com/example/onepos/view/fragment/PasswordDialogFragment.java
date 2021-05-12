@@ -1,7 +1,6 @@
 package com.example.onepos.view.fragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.ContextThemeWrapper;
@@ -11,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,7 +26,7 @@ import com.example.onepos.viewmodel.MainViewModel;
 
 public class PasswordDialogFragment extends DialogFragment implements View.OnClickListener {
     public static final String VIEWMODEL_CLASS_TAG = "viewmodel_class_tag";
-    public static final String ACTION_TYPE_TAG = "action_type_tag";
+    public static final String TAG_ACTION_TYPE = "tag_action_type";
     public static final String TAG = "PasswordDialogFragment_TAG";
     private BaseViewModel viewModel;
     private int actionType;
@@ -42,10 +42,10 @@ public class PasswordDialogFragment extends DialogFragment implements View.OnCli
     private SparseArray<String> keyValues;
     private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnBackpack, btnCancel;
 
-    public static PasswordDialogFragment newInstance(Class c, int actionType) {
+    public static PasswordDialogFragment newInstance(Class<? extends BaseViewModel> c, int actionType) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(VIEWMODEL_CLASS_TAG, c);
-        bundle.putInt(ACTION_TYPE_TAG, actionType);
+        bundle.putInt(TAG_ACTION_TYPE, actionType);
         PasswordDialogFragment fragment = new PasswordDialogFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -96,16 +96,33 @@ public class PasswordDialogFragment extends DialogFragment implements View.OnCli
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Bundle bundle = getArguments();
-            actionType = bundle.getInt(ACTION_TYPE_TAG);
+            actionType = bundle.getInt(TAG_ACTION_TYPE);
             viewmodelClass = (Class)bundle.getSerializable(VIEWMODEL_CLASS_TAG);
-            viewModel = (BaseViewModel)ViewModelProviders.of(getActivity()).get(viewmodelClass);
+            viewModel = (BaseViewModel) ViewModelProviders.of(getActivity()).get(viewmodelClass);
             viewModel.getLiveFlag().observe(this, flag->{
-                dismiss();
-                if ((int) flag == 4) {
-                    if (viewModel.isEligible())
-                        listener.onPassword((int)flag);
+                switch ((int)flag) {
+                    case 0:
+                        Toast.makeText(getActivity(), R.string.msg_punch_in, Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Toast.makeText(getActivity(), R.string.msg_punch_in_error, Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(getActivity(), R.string.msg_punch_out, Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3:
+                        Toast.makeText(getActivity(), R.string.msg_punch_out_error, Toast.LENGTH_SHORT).show();
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        Toast.makeText(getActivity(), R.string.msg_no_permission, Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        throw new IllegalArgumentException("The action doesn't exist.");
                 }
-                else
+                dismiss();
+                if ((int)flag!=5 && listener!=null)
                     listener.onPassword((int)flag);
             });
         }
@@ -252,11 +269,7 @@ public class PasswordDialogFragment extends DialogFragment implements View.OnCli
         return password;
     }
 
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
 
-    }
     public void setListener(OnPasswordListener listener) {
         this.listener = listener;
     }

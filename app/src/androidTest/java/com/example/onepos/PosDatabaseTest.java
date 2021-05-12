@@ -1,6 +1,7 @@
 package com.example.onepos;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -10,6 +11,7 @@ import com.example.onepos.model.Customer;
 import com.example.onepos.model.CustomerOrder;
 import com.example.onepos.model.MenuItem;
 import com.example.onepos.model.ModifierItem;
+import com.example.onepos.model.OrderMenuItem;
 import com.example.onepos.model.Staff;
 import com.example.onepos.model.local.AddressDAO;
 import com.example.onepos.model.local.CustomerDAO;
@@ -21,6 +23,7 @@ import com.example.onepos.model.local.OrderModifierItemDAO;
 import com.example.onepos.model.local.PosDatabase;
 import com.example.onepos.model.local.StaffDAO;
 import com.example.onepos.util.DateUtil;
+import com.example.onepos.util.MLog;
 
 import org.junit.After;
 import org.junit.Before;
@@ -76,57 +79,24 @@ public class PosDatabaseTest {
     }
 
     @Test
-    public void testModifier() {
-        ModifierItemDAO modifierItemDAO = PosDatabase.getInstance(ApplicationProvider.getApplicationContext()).modifierItemDAO();
-        List<ModifierItem> list = modifierItemDAO.getModifierItemsByType(0, 1);
-        assertEquals(0, list.size());
+    public void testMenuItemDAO() {
+        Cursor cursor = menuItemDAO.getMenuItemsByLangAndParentId(0, 1);
+        List<MenuItem> list = MenuItem.fromCursor(cursor);
+        for (MenuItem item : list) {
+            MLog.d(item.toString());
+        }
     }
 
     @Test
     public void testAddress() {
-        AddressDAO addressDAO = PosDatabase.getInstance(ApplicationProvider.getApplicationContext()).addressDAO();
-        List<Address> list = addressDAO.getAddressesByCustomerId(Long.valueOf(2));
-        assertEquals("", list.toString());
+        List<Address> list = addressDAO.getAllAddresses();
+        for (Address address : list) {
+            MLog.d(address.getFkCustomerId()+" "+address.toString());
+        }
     }
-
-    @Test
-    public void testCustomer() {
-        CustomerDAO customerDAO = PosDatabase.getInstance(ApplicationProvider.getApplicationContext()).customerDAO();
-        Customer customer = customerDAO.getCustomerByPhoneNum("123-456-7890");
-        assertEquals(null, customer);
-    }
-
-    @Test
-    public void testDate() {
-        String[] old = "07/08/2019".split("/");
-        assertEquals("1", old[1]);
-        assertEquals("1", old[2]);
-    }
-
-    @Test
-    public void testPassword() {
-        List<Staff> list =  PosDatabase.getInstance(ApplicationProvider.getApplicationContext()).staffDAO().getStaffByPassword("5555");
-        assertEquals(null, list.size());
-    }
-    @Test
-    public void deleteStaff() {
-        staffDAO.deleteStaffById(0);
-        staffDAO.deleteStaffById(1);
-        staffDAO.deleteStaffById(2);
-        staffDAO.deleteStaffById(3);
-        staffDAO.deleteStaffById(4);
-        staffDAO.deleteStaffById(5);
-        staffDAO.deleteStaffById(6);
-    }
-
     @Test
     public void testCustomerOrder() {
-        String.format("%-18.18s%7.2f", "Subtotal:", 22.22);
-    }
-
-    @Test
-    public void testMenuitem() {
-        MenuItem menuItem = PosDatabase.getInstance(ApplicationProvider.getApplicationContext()).menuItemDAO().getMenuitem();
-        assertEquals(null, menuItem.getName());
+        List<CustomerOrder> list = customerOrderDAO.getCustomerOrderByPhoneNumber("444-444-4444");
+        MLog.d(""+list.size());
     }
 }

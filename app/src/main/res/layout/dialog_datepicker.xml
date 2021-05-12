@@ -6,4 +6,5 @@
     android:spinnersShown="true"
     android:calendarViewShown="false"
     android:datePickerMode="spinner"
+    android:descendantFocusability="blocksDescendants"
     />

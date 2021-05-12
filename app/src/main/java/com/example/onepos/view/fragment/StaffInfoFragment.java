@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.onepos.R;
 import com.example.onepos.model.Staff;
 import com.example.onepos.util.DateUtil;
+import com.example.onepos.util.MLog;
 import com.example.onepos.util.Validator;
 import com.example.onepos.view.dialog.CustomDatePickerDialog;
 import com.example.onepos.viewmodel.OfficeViewModel;
@@ -31,8 +32,8 @@ public class StaffInfoFragment extends Fragment implements View.OnClickListener 
     public static final String TAG = "StaffInfoFragment";
     public static final String STAFF_ID = "staff_id";
     private EditText etName, etAddress, etPhoneNum, etSsn, etBirth, etPassword;
-    private RadioGroup rgTitle;
-    private String[] titles;
+    private RadioGroup rgTitle, rgLang;
+    private String[] TITLES, LANGUAGES;
 
 
     public static StaffInfoFragment newInstance(long id) {
@@ -52,26 +53,23 @@ public class StaffInfoFragment extends Fragment implements View.OnClickListener 
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        officeViewModel = ViewModelProviders.of(getActivity()).get(OfficeViewModel.class);
+
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_staff_info, container, false);
-        titles = getContext().getResources().getStringArray(R.array.staff_titles);
+        TITLES = getContext().getResources().getStringArray(R.array.staff_titles);
+        LANGUAGES = getContext().getResources().getStringArray(R.array.staff_langs);
+        long id;
+        if ((id = getArguments().getLong(StaffInfoFragment.STAFF_ID, 0))!=0)
+            setEditStaffView(rootView, id);
+        else
+            setCreateStaffView(rootView);
         initLayout(rootView);
         return rootView;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        officeViewModel = ViewModelProviders.of(getActivity()).get(OfficeViewModel.class);
-        long id;
-        if ((id = getArguments().getLong(StaffInfoFragment.STAFF_ID, -1))!=-1)
-            setEditStaffView(view, id);
-        else
-            setCreateStaffView(view);
     }
 
     private void setCreateStaffView(View rootView) {
@@ -104,10 +102,12 @@ public class StaffInfoFragment extends Fragment implements View.OnClickListener 
         etBirth.setShowSoftInputOnFocus(false);
         etBirth.onCreateInputConnection(new EditorInfo());
         rgTitle = rootView.findViewById(R.id.rg_title);
+        rgLang = rootView.findViewById(R.id.rg_lang);
         loadJobTitles(rgTitle);
+        loadPreferredLanguages(rgLang);
         etBirth.setOnFocusChangeListener((view, hasFocus) -> {
             if (hasFocus) {
-                new CustomDatePickerDialog(getActivity(), etBirth)
+                new CustomDatePickerDialog(getActivity(), etBirth,null)
                     .show();
             }
         });
@@ -121,17 +121,24 @@ public class StaffInfoFragment extends Fragment implements View.OnClickListener 
         etSsn.setText(staff.getSsn());
         etBirth.setText(DateUtil.millisToDate(staff.getDateOfBirth()));
         rgTitle.check(rgTitle.getChildAt(staff.getTitle()).getId());
+        rgLang.check(rgLang.getChildAt(staff.getLang()).getId());
     }
     private void loadJobTitles(RadioGroup rgTitle) {
-        int length = titles.length;
-        for (int i = 0; i < length; i++) {
+        for (String title:TITLES){
             RadioButton button = new RadioButton(getActivity());
-            button.setText(titles[i]);
+            button.setText(title);
             rgTitle.addView(button);
         }
         rgTitle.check(rgTitle.getChildAt(0).getId());
     }
-
+    private void loadPreferredLanguages(RadioGroup rgTitle) {
+        for (String lang:LANGUAGES) {
+            RadioButton button = new RadioButton(getActivity());
+            button.setText(lang);
+            rgTitle.addView(button);
+        }
+        rgTitle.check(rgLang.getChildAt(0).getId());
+    }
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -142,9 +149,10 @@ public class StaffInfoFragment extends Fragment implements View.OnClickListener 
                 break;
             case R.id.btn_save:
                 int title = rgTitle.indexOfChild(rgTitle.findViewById(rgTitle.getCheckedRadioButtonId()));
+                int lang = rgLang.indexOfChild(rgLang.findViewById(rgLang.getCheckedRadioButtonId()));
                 if (Validator.isFieldValid(etName)&&Validator.isTitleValid(title)&&Validator.isFieldValid(etPhoneNum)&&Validator.isFieldValid(etAddress)
                     &&Validator.isFieldValid(etBirth)&&Validator.isSsnValid(etSsn)&&Validator.isPasswordValid(etPassword)){
-                    officeViewModel.saveStaff(etName.getText().toString(), title, DateUtil.dateToMillis(etBirth.getText().toString())
+                    officeViewModel.saveStaff(etName.getText().toString(), title, lang, DateUtil.dateToMillis(etBirth.getText().toString())
                             , etPhoneNum.getText().toString(), etAddress.getText().toString(), etSsn.getText().toString(), etPassword.getText().toString());
                     backToStaffFragment();
                 }
@@ -155,17 +163,16 @@ public class StaffInfoFragment extends Fragment implements View.OnClickListener 
             default:
                 throw new IllegalArgumentException("The button doesn't exist.");
         }
-
     }
 
+    private void saveAndExit() {
+
+    }
     private void backToStaffFragment() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(StaffFragment.TAG);
-        if (fragment != null&&fragment.isHidden()) {
-            fm.beginTransaction()
-                    .remove(this)
-                    .show(fragment)
-                    .commit();
-        }
+        fm.beginTransaction()
+                .remove(this)
+                .add(R.id.fragment_container, StaffFragment.newInstance(), StaffFragment.TAG)
+                .commit();
     }
 }

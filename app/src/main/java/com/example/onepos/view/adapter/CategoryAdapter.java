@@ -61,7 +61,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int pos) {
         TextView tvCategory = holder.tvCategory;
-        tvCategory.setText(listCategory.get(pos).getName().toUpperCase());
+        tvCategory.setText(listCategory.get(pos).getTitle().toUpperCase());
         if (pos==indexSelected){ //TODO do further research about reused viewholders.
             holder.tvCategory.setBackgroundColor(colorSelected);
         }

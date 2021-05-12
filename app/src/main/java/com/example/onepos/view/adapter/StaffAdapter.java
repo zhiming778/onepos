@@ -14,11 +14,13 @@ import com.example.onepos.R;
 import com.example.onepos.model.Staff;
 import com.example.onepos.util.MLog;
 
+import java.util.List;
+
 public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.StaffViewHolder> {
 
-    private Cursor cursor;
+    private List<Staff> list;
     private final int COLUMN_ID = 0, COLUMN_TITLE = 1, COLUMN_NAME = 2;
-    private final String[] titles;
+    private final String[] TITLES;
 
     public interface OnItemClickListener{
         void onItemClick(long id);
@@ -26,9 +28,9 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.StaffViewHol
 
     private OnItemClickListener onItemClickListener;
 
-    public StaffAdapter(Fragment fragment) {
-        this.onItemClickListener = (OnItemClickListener)fragment;
-        titles = fragment.getContext().getResources().getStringArray(R.array.staff_titles);
+    public StaffAdapter(OnItemClickListener onItemClickListener, final String[] TITLES) {
+        this.onItemClickListener = onItemClickListener;
+        this.TITLES = TITLES;
     }
 
     @Override
@@ -46,10 +48,9 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.StaffViewHol
 
     @Override
     public void onBindViewHolder(@NonNull StaffViewHolder holder, int pos) {
-        cursor.moveToPosition(pos);
-        holder.tvTitle.setText(titles[cursor.getInt(COLUMN_TITLE)]);
-        holder.tvName.setText(cursor.getString(COLUMN_NAME));
-        holder.id = cursor.getLong(COLUMN_ID);
+        holder.tvTitle.setText(TITLES[list.get(pos).getTitle()]);
+        holder.tvName.setText(list.get(pos).getName());
+        holder.id = list.get(pos).getId();
     }
     static class StaffViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvName, tvTitle;
@@ -69,8 +70,8 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.StaffViewHol
     }
     @Override
     public int getItemCount() {
-        if (cursor!=null)
-            return cursor.getCount();
+        if (list!=null)
+            return list.size();
         else
             return 0;
     }
@@ -78,18 +79,11 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.StaffViewHol
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
-        if (cursor!=null) {
-            cursor.close();
-            cursor = null;
-        }
         onItemClickListener = null;
     }
 
-    public void setCursor(Cursor cursor) {
-        if (this.cursor != null && (!this.cursor.isClosed())) {
-            this.cursor.close();
-        }
-        this.cursor = cursor;
+    public void setList(List<Staff> list) {
+        this.list = list;
         notifyDataSetChanged();
     }
 }

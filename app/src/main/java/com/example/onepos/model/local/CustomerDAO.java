@@ -25,4 +25,6 @@ public interface CustomerDAO {
 
     @Query("DELETE FROM table_customer WHERE id = :id")
     int deleteCustomer(Long id);
+
+
 }

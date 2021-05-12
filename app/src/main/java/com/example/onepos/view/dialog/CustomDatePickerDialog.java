@@ -8,32 +8,38 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.DatePicker;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.onepos.R;
 
 public class CustomDatePickerDialog extends AlertDialog{
 
-    private EditText editText;
+    private TextView textView;
     private DatePicker datePicker;
+    private DateCallback dateCallback;
 
-    public CustomDatePickerDialog(Context context, EditText editText) {
+    public interface DateCallback {
+        void callback();
+    }
+
+    public CustomDatePickerDialog(Context context, TextView textView, DateCallback dateCallback) {
         super(context);
-        this.editText = editText;
+        this.textView = textView;
+        this.dateCallback = dateCallback;
         datePicker = (DatePicker) LayoutInflater.from(context).inflate(R.layout.dialog_datepicker, null);
         updateDate();
         setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.btn_confirm), ((dialogInterface, i) -> {
-            editText.setText(String.format("%s/%s/%s", datePicker.getMonth()+1, datePicker.getDayOfMonth(), datePicker.getYear()));
+            this.textView.setText(String.format("%s-%s-%s", datePicker.getMonth()+1, datePicker.getDayOfMonth(), datePicker.getYear()));
         }));
         setView(datePicker);
     }
 
     private void updateDate() {
         int year = 0, month = 0, day = 0;
-        String oldDate = editText.getText().toString();
-        if (oldDate.matches("\\d{1,2}\\/\\d{1,2}\\/\\d{4}"))
+        String oldDate = textView.getText().toString();
+        if (oldDate.matches("\\d{1,2}-\\d{1,2}-\\d{4}"))
         {
-            String[] old = editText.getText().toString().split("/");
+            String[] old = textView.getText().toString().split("-");
             month = Integer.parseInt(old[0]);
             day = Integer.parseInt(old[1]);
             year = Integer.parseInt(old[2]);
@@ -44,7 +50,9 @@ public class CustomDatePickerDialog extends AlertDialog{
     @Override
     protected void onStop() {
         super.onStop();
-        editText.clearFocus();
+        textView.clearFocus();
+        if (dateCallback!=null)
+            dateCallback.callback();
     }
 
     @Override

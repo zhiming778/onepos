@@ -1,6 +1,9 @@
 package com.example.onepos.repo;
 
 import android.app.Application;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 
 import com.example.onepos.model.Address;
 import com.example.onepos.model.Customer;
@@ -12,13 +15,15 @@ import com.example.onepos.model.OrderMenuItem;
 import com.example.onepos.model.OrderModifierItem;
 import com.example.onepos.model.Receipt;
 import com.example.onepos.model.Staff;
+import com.example.onepos.model.api.RemoteDataSource;
 import com.example.onepos.model.local.CustomerDAO;
 import com.example.onepos.model.local.CustomerOrderDAO;
+import com.example.onepos.model.local.ItemTranslationDAO;
 import com.example.onepos.model.local.ModifierItemDAO;
 import com.example.onepos.model.local.OrderMenuItemDAO;
 import com.example.onepos.model.local.OrderModifierItemDAO;
 import com.example.onepos.model.local.PosDatabase;
-import com.example.onepos.model.service.PrinterService;
+import com.example.onepos.util.MLog;
 import com.example.onepos.view.activity.OrderActivity;
 
 import java.util.ArrayList;
@@ -26,55 +31,50 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
 
 public class OrderRepository extends BaseRepository{
 
+    private final RemoteDataSource remoteDataSource;
     @Inject
-    public OrderRepository(Application application) {
+    public OrderRepository(Application application, RemoteDataSource remoteDataSource) {
         super(application);
+        this.remoteDataSource = remoteDataSource;
     }
 
-    public Single<List<MenuItem>> getCategories() {
+    public Single<List<MenuItem>> getCategories(int lang) {
         return Single.create(emitter -> {
-            emitter.onSuccess(PosDatabase.getInstance(application).menuItemDAO()
-                    .getMenuItems(MenuItem.CATEGORY_MENUITEM_PARENT_ID));
-        });
-    }
-
-    public Single<List<MenuItem>> getMenuItems(long parentId) {
-        return Single.create(emitter -> {
-            emitter.onSuccess(PosDatabase.getInstance(application).menuItemDAO()
-                    .getMenuItems(parentId));
-        });
-    }
-
-    public Single<List<ModifierItem>> getModifierItems(int type, long fkCategoryId) {
-        ModifierItemDAO modifierItemDAO = PosDatabase.getInstance(application).modifierItemDAO();
-        return Single.create(emitter -> {
-            List<ModifierItem> list = null;
-            if (type == 0 || type == 1) {
-                list = modifierItemDAO.getModifierItemsByType(0, fkCategoryId);
-                list.addAll(modifierItemDAO.getModifierItemsByType(1, fkCategoryId));
-            } else {
-                list = modifierItemDAO.getModifierItemsByType(type, 1);
-            }
+            final List<MenuItem> list = MenuItem.fromCursor(PosDatabase.getInstance(application).menuItemDAO().getMenuItemsByLangAndParentId(MenuItem.CATEGORY_MENUITEM_PARENT_ID, lang));
             emitter.onSuccess(list);
         });
     }
 
-    public Maybe<Customer> getCustomerByPhoneNumber(String phoneNumber) {
-        return Maybe.create(emitter -> {
+    public Single<List<MenuItem>> getAllMenuitems(int lang) {
+        return Single.create(emitter -> {
+            final List<MenuItem> list = MenuItem.fromCursor(PosDatabase.getInstance(application).menuItemDAO().getAllMenuitemsByLang(lang));
+            emitter.onSuccess(list);
+        });
+    }
+    public Single<List<ModifierItem>> getModifierItemsByCategory(int lang, long fkCategoryId) {
+        ModifierItemDAO modifierItemDAO = PosDatabase.getInstance(application).modifierItemDAO();
+        return Single.create(emitter -> {
+            final List<ModifierItem> list = ModifierItem.fromCursor(modifierItemDAO.getModifierItemsByCategoryAndLang(fkCategoryId, lang));
+            emitter.onSuccess(list);
+        });
+    }
+
+    public Single<Customer> getCustomerByPhoneNumber(String phoneNumber) {
+        return Single.create(emitter -> {
             Customer customer = PosDatabase
                     .getInstance(application)
                     .customerDAO()
                     .getCustomerByPhoneNum(phoneNumber);
-            if (customer != null) {
+            if (customer != null)
                 emitter.onSuccess(customer);
-            }
-            emitter.onComplete();
+            else
+                emitter.onSuccess(new Customer(null, null));
         });
     }
 
@@ -126,6 +126,24 @@ public class OrderRepository extends BaseRepository{
             return customerOrder.getId();
         }
     }
+
+    public Single<ContentValues> getRoute(String startingPoint, String destination) {
+        return Single.create(emitter -> {
+            emitter.onSuccess(remoteDataSource.getRoute(startingPoint, destination));
+        });
+    }
+
+    public Single<Bitmap> getMapImage(String startingPoint, String destination) {
+        return Single.create(emitter -> {
+            emitter.onSuccess(remoteDataSource.getMapImage(application.getResources(), startingPoint, destination));
+        });
+    }
+
+    public Single<List<Address>> getSuggestAddresses(String query, String coordinates) {
+        return Single.create(emitter -> {
+            emitter.onSuccess(remoteDataSource.getSuggestAddresses(query, coordinates));
+        });
+    }
     public Completable saveOrder(Customer customer, Address address, CustomerOrder customerOrder, Receipt receipt, int mode) {
         return Completable.create(emitter -> {
             Long customerId = saveCustomer(customer);
@@ -141,9 +159,17 @@ public class OrderRepository extends BaseRepository{
         });
     }
 
+    public Single<List<CustomerOrder>> getCustomerOrderByPhoneNumber(String phoneNumber) {
+        return Single.create(emitter -> {
+            final List<CustomerOrder> list = PosDatabase.getInstance(application).customerOrderDAO()
+                    .getCustomerOrderByPhoneNumber(phoneNumber);
+            emitter.onSuccess(list);
+        });
+    }
+
     public Single<CustomerOrder> getCustomerOrderById(long id) {
         return Single.create(emitter -> {
-            CustomerOrder customerOrder = PosDatabase.getInstance(application).customerOrderDAO()
+            final CustomerOrder customerOrder = PosDatabase.getInstance(application).customerOrderDAO()
                     .getCustomerOrderById(id);
             emitter.onSuccess(customerOrder);
         });
@@ -164,19 +190,23 @@ public class OrderRepository extends BaseRepository{
         });
     }
 
-    public Single<List<OrderItem>> getOrderItemsByOrderId(long id) {
+    public Single<List<OrderItem>> getOrderItemsByLangAndOrderId(int lang, long id) {
         return Single.create(emitter -> {
-            List<OrderMenuItem> orderMenuItems = PosDatabase.getInstance(application).orderMenuItemDAO()
-                    .getOrderMenuItemById(id);
-            List<OrderModifierItem> orderModifierItems = PosDatabase.getInstance(application).orderModifierItemDAO()
-                    .getItemsByCustomerOrderId(id);
+            Cursor cursor = PosDatabase.getInstance(application).orderMenuItemDAO()
+                    .getOrderMenuItemsByLangAndOrderId(lang, id);
+            List<OrderMenuItem> orderMenuItems = OrderMenuItem.fromCursor(cursor);
+            cursor.close();
+            cursor = PosDatabase.getInstance(application).orderModifierItemDAO()
+                    .getOrderModifierItemsByLangAndOrderId(lang, id);
+            List<OrderModifierItem> orderModifierItems = OrderModifierItem.fromCursor(cursor);
+            cursor.close();
             emitter.onSuccess(mergeOrderItems(orderMenuItems, orderModifierItems));
         });
     }
 
     public Completable printTicket(Receipt receipt, Staff staff) {
         return Completable.create(emitter -> {
-            PrinterService.getInstance(application).printTicket(receipt, staff);
+            //PrinterService.getInstance(application).printTicket(receipt, staff);
             emitter.onComplete();
         });
     }
@@ -193,6 +223,24 @@ public class OrderRepository extends BaseRepository{
         }
         return list;
     }
+
+    public Completable updateOrderItemTitles(int lang, Receipt receipt) {
+        return Completable.create(emitter -> {
+            final ItemTranslationDAO itemTranslationDAO = PosDatabase.getInstance(application).itemTranslationDAO();
+            for (int i = 0; i < receipt.getNumOfItems(); i++) {
+                final OrderItem orderItem = receipt.get(i);
+                final long itemId = orderItem.getFkitemid();
+                final String newTitle;
+                if (orderItem instanceof OrderMenuItem)
+                    newTitle =itemTranslationDAO.getOrderMenuItemByLangAndItemId(lang, itemId);
+                else
+                    newTitle = itemTranslationDAO.getOrderModifierItemByLangAndItemId(lang, itemId);
+                orderItem.getItem().setTitle(newTitle);
+            }
+            emitter.onComplete();
+        });
+    }
+
     private void deleteOrderItems(Receipt receipt) {
         OrderMenuItemDAO orderMenuItemDAO = PosDatabase.getInstance(application).orderMenuItemDAO();
         OrderModifierItemDAO orderModifierItemDAO = PosDatabase.getInstance(application).orderModifierItemDAO();

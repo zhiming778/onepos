@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
+import io.reactivex.rxjava3.core.Single;
 
 public class MainRepository extends BaseRepository{
 

@@ -53,7 +53,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
             ((TextView)(holder.itemView)).setText(TXT_RETURN);
         }
         else{
-            ((TextView)(holder.itemView)).setText(listMenuItem.get(pos).getName());
+            ((TextView)(holder.itemView)).setText(listMenuItem.get(pos).getTitle());
         }
     }
 
@@ -85,7 +85,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
             }
             else{
                 MenuItem menuItem = listMenuItem.get(pos);
-                if (menuItem.hasDescendant()){
+                if (menuItem.isHasDescendant()){
                     listener.onOrder(pos, OrderFragment.REQUEST_TYPE_SUBMENUITEM);
                 }
                 else{

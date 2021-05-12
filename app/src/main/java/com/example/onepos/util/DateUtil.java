@@ -8,11 +8,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class DateUtil {
 
     private Application application;
-    private static final String DATE_PATTERN = "MM/dd/yyyy";
+    private static final String DATE_PATTERN = "MM-dd-yyyy";
     private static final String TIME_PATTERN = "hh:mm aa";
 
 
@@ -39,13 +40,22 @@ public class DateUtil {
         DateFormat df = new SimpleDateFormat(TIME_PATTERN, Locale.US);
         return df.format(calendar.getTime());
     }
-    public static long getMidnightMillis(long millis) {
+    public static long getStartMillis(long millis) {
         Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(System.currentTimeMillis());
+        c.setTimeInMillis(millis);
         c.set(Calendar.HOUR, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.AM_PM, Calendar.AM);
         return c.getTimeInMillis();
+    }
+    public static long getEndMillis(long millis) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(millis);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.AM_PM, Calendar.AM);
+        return (c.getTimeInMillis() + TimeUnit.DAYS.toMillis(1));
     }
 }

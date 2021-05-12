@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -25,5 +26,10 @@ public class DateTest {
         c.set(Calendar.HOUR, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
+    }
+
+    @Test
+    public void testLocale() {
+        assertNull(Locale.getDefault().getLanguage());
     }
 }

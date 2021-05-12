@@ -2,6 +2,7 @@ package com.example.onepos.di;
 
 import android.app.Application;
 
+import com.example.onepos.model.api.RemoteDataSource;
 import com.example.onepos.repo.MainRepository;
 import com.example.onepos.repo.ModifyRepository;
 import com.example.onepos.repo.OfficeRepository;
@@ -14,8 +15,8 @@ import dagger.Provides;
 public class ViewModelModule {
 
     @Provides
-    public OrderRepository provideOrderRepository(Application application) {
-        return new OrderRepository(application);
+    public OrderRepository provideOrderRepository(Application application, RemoteDataSource remoteDataSource) {
+        return new OrderRepository(application, remoteDataSource);
     }
 
     @Provides
@@ -31,5 +32,10 @@ public class ViewModelModule {
     @Provides
     public ModifyRepository provideModifyRepository(Application application) {
         return new ModifyRepository(application);
+    }
+
+    @Provides
+    public RemoteDataSource provideRemoteDataSource() {
+        return new RemoteDataSource();
     }
 }

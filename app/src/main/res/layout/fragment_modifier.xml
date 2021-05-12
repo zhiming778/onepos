@@ -8,7 +8,8 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs_modifier"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/cell_height"
+        android:layout_height="wrap_content"
+        app:tabTextAppearance="@style/CustomTablayout"
         app:tabSelectedTextColor="@color/colorMain"
         app:tabRippleColor="@null"
         />

@@ -1,18 +1,17 @@
 package com.example.onepos.repo;
 
 import android.app.Application;
-import android.database.Cursor;
 
 import com.example.onepos.model.Staff;
 import com.example.onepos.model.local.PosDatabase;
 import com.example.onepos.model.local.StaffDAO;
-import com.example.onepos.util.MLog;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 
 public class OfficeRepository extends BaseRepository{
 
@@ -22,14 +21,10 @@ public class OfficeRepository extends BaseRepository{
     }
 
 
-    public Maybe<Cursor> getAllStaff() {
-        return Maybe.create(emitter -> {
-            Cursor cursor = PosDatabase.getInstance(application)
-                    .staffDAO()
-                    .getAllStaff();
-            if (cursor!=null)
-                emitter.onSuccess(cursor);
-            emitter.onComplete();
+    public Single<List<Staff>> getAllStaff() {
+        return Single.create(emitter -> {
+            List<Staff> list = Staff.fromCursor(PosDatabase.getInstance(application).staffDAO().getAllStaff());
+            emitter.onSuccess(list);
         });
     }
 
@@ -46,7 +41,6 @@ public class OfficeRepository extends BaseRepository{
         StaffDAO staffDAO = PosDatabase.getInstance(application).staffDAO();
         return Completable.create(emitter -> {
             if (staff.getId() == 0) {
-                staff.setId(0);
                 staffDAO.insertStaff(staff);
             } else
                 staffDAO.updateStaff(staff);

@@ -3,21 +3,16 @@ package com.example.onepos.viewmodel;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.onepos.model.TimeClock;
-import com.example.onepos.model.local.PosDatabase;
 import com.example.onepos.repo.MainRepository;
-import com.example.onepos.util.MLog;
 
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.internal.schedulers.SchedulerPoolFactory;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainViewModel extends BaseViewModel<MainRepository> {
 
@@ -33,7 +28,7 @@ public class MainViewModel extends BaseViewModel<MainRepository> {
 
     public void punchIn(String password) {
         Disposable disposable = repository.punchInOrOut(TimeClock.TYPE_PUNCH_IN, password)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ifSuccess->{
                     if (ifSuccess)

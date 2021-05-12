@@ -92,7 +92,7 @@ public class Printer {
         int quantity = orderItem.getQuantity();
         if (quantity > 1)
             item.append(quantity).append("X ");
-        return item.append(orderItem.getItem().getName()).toString();
+        return item.append(orderItem.getItem().getTitle()).toString();
     }
 
     public void writeItem(String item, double price) {

@@ -9,5 +9,6 @@
     android:textSize="@dimen/text_size_med"
     android:textColor="@color/colorWhiteText"
     android:textAlignment="center"
+    android:gravity="center_vertical"
     tools:text="@string/test_text"
     />

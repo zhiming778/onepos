@@ -7,7 +7,7 @@ import com.example.onepos.model.local.PosDatabase;
 
 import java.util.List;
 
-import io.reactivex.Single;
+import io.reactivex.rxjava3.core.Single;
 
 public abstract class BaseRepository {
 
@@ -17,19 +17,20 @@ public abstract class BaseRepository {
         this.application = application;
     }
 
-    public Single<Boolean> isTitleEligible(String password, int requiredLevel) {
+    public Single<Staff> getStaff(String password) {
         return Single.create(emitter -> {
             List<Staff> listStaff = PosDatabase.getInstance(application)
                     .staffDAO()
                     .getStaffByPassword(password);
-            if (listStaff.size()>1)
+            if (listStaff.size()>1)  //TODO fix it!
                 emitter.onError(new Throwable());
-            else{
-                if (listStaff.size()==0)
-                    emitter.onSuccess(Boolean.FALSE);
-                else
-                    emitter.onSuccess(listStaff.get(0).getTitle()>=requiredLevel);
+            else if (listStaff.size() == 1) {
+                emitter.onSuccess(listStaff.get(0));
+            } else {
+                final Staff staff = new Staff();
+                emitter.onSuccess(staff);
             }
+
         });
     }
 

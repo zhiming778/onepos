@@ -1,10 +1,8 @@
 package com.example.onepos.model;
 
 import androidx.room.ColumnInfo;
-import androidx.room.Embedded;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.Update;
 
 import com.example.onepos.util.MoneyUtil;
 
@@ -16,35 +14,33 @@ public abstract class OrderItem <T extends Item> {
     @Ignore
     public static final int MODE_ADDED = 1;
 
-    @Update
+    @Ignore
     public static final int MODE_DELETED = 2;
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = PosContract.OrderItemEntry.COLUMN_ID)
     protected long id;
 
-    @ColumnInfo(name = "quantity")
+    @ColumnInfo(name = PosContract.OrderItemEntry.COLUMN_QUANTITY)
     protected int quantity;
 
-    @ColumnInfo(name = "discount")
-    private double discount;
+    @ColumnInfo(name = PosContract.OrderItemEntry.COLUMN_DISCOUNT)
+    protected double discount;
 
-    @ColumnInfo(name = "FK_customer_order_id")
+    @ColumnInfo(name = PosContract.OrderItemEntry.COLUMN_FK_CUSTOMER_ORDER_ID)
     protected long fkCustomerOrderId;
 
-    @Embedded(prefix = "menu_")
+    @ColumnInfo(name = PosContract.OrderItemEntry.COLUMN_FK_ITEM_ID)
+    protected long fkitemid;
+
+    @Ignore
     protected T item;
 
     @Ignore
     protected int mode;
 
-    public OrderItem(T item, int mode) {
-        this.item = item;
-        quantity = 1;
-        this.fkCustomerOrderId = -1;
-        this.mode = mode;
-        discount = 0;
-    }
+
+
     public long getId() {
         return id;
     }
@@ -81,6 +77,13 @@ public abstract class OrderItem <T extends Item> {
         return (price - MoneyUtil.doubleTimesDouble(price, discount));
     }
 
+    public String getTitle(String DISCOUNT_FORMAT) {
+        if (discount>0)
+            return item.getTitle().concat(String.format(DISCOUNT_FORMAT, (int) (discount * 100)));
+        else
+            return item.getTitle();
+    }
+
     public T getItem() {
         return item;
     }
@@ -109,4 +112,13 @@ public abstract class OrderItem <T extends Item> {
     public void setDiscount(double discount) {
         this.discount = discount;
     }
+
+    public long getFkitemid() {
+        return fkitemid;
+    }
+
+    public void setFkitemid(long fkitemid) {
+        this.fkitemid = fkitemid;
+    }
+
 }

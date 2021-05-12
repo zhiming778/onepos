@@ -1,5 +1,6 @@
 package com.example.onepos.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -72,8 +73,6 @@ public class CustomerOrder {
     @ColumnInfo(name = "discount")
     private double discount;
 
-    @ColumnInfo(name = "delivery_charge")
-    private double deliveryCharge;
     //0: not paied
     //1: cash
     //2: visa
@@ -108,7 +107,6 @@ public class CustomerOrder {
     public CustomerOrder() {
         id = -1;
         discount = 0;
-        deliveryCharge = 0;
         tax = 0;
         subtotal = 0;
         total = 0;
@@ -180,14 +178,6 @@ public class CustomerOrder {
         this.discount = discount;
     }
 
-    public double getDeliveryCharge() {
-        return deliveryCharge;
-    }
-
-    public void setDeliveryCharge(double deliveryCharge) {
-        this.deliveryCharge = deliveryCharge;
-    }
-
     public double getTax() {
         return tax;
     }
@@ -202,5 +192,11 @@ public class CustomerOrder {
 
     public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return id + ": orderType=" + orderType + " total=" + total;
     }
 }

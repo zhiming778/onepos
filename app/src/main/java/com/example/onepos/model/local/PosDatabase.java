@@ -9,8 +9,11 @@ import androidx.room.RoomDatabase;
 import com.example.onepos.model.Address;
 import com.example.onepos.model.Customer;
 import com.example.onepos.model.CustomerOrder;
+import com.example.onepos.model.ItemTranslation;
 import com.example.onepos.model.MenuItem;
+import com.example.onepos.model.MenuItemTranslation;
 import com.example.onepos.model.ModifierItem;
+import com.example.onepos.model.ModifierItemTranslation;
 import com.example.onepos.model.OrderMenuItem;
 import com.example.onepos.model.OrderModifierItem;
 import com.example.onepos.model.Staff;
@@ -24,9 +27,11 @@ import com.example.onepos.model.TimeClock;
         OrderMenuItem.class,
         OrderModifierItem.class,
         TimeClock.class,
+        MenuItemTranslation.class,
+        ModifierItemTranslation.class,
         Staff.class},
         version = 1,
-        exportSchema = false)
+        exportSchema = true)
 
 public abstract class PosDatabase extends RoomDatabase {
     public abstract AddressDAO addressDAO();
@@ -44,6 +49,8 @@ public abstract class PosDatabase extends RoomDatabase {
     public abstract OrderModifierItemDAO orderModifierItemDAO();
 
     public abstract StaffDAO staffDAO();
+
+    public abstract ItemTranslationDAO itemTranslationDAO();
 
     public abstract TimeClockDAO timeClockDAO();
 

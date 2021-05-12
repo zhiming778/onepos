@@ -6,13 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".view.activity.ModifyActivity">
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/distance_med"
+        android:background="@null"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/arrow_right"
+        android:id="@+id/btn_arrow_right"/>
+
+    <TextView
+        android:layout_width="@dimen/label_width"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/distance_med"
+        android:layout_toStartOf="@id/btn_arrow_right"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_med"
+        android:id="@+id/tv_date" />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/distance_med"
+        android:background="@null"
+        android:layout_toStartOf="@id/tv_date"
+        android:src="@drawable/arrow_left"
+        android:id="@+id/btn_arrow_left"/>
+
+
     <com.google.android.material.tabs.TabLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/cell_height"
-        app:tabSelectedTextColor="@color/colorMain"
-        app:tabRippleColor="@null"
         android:id="@+id/tabs"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/btn_arrow_left"
+        app:tabRippleColor="@null"
+        app:tabSelectedTextColor="@color/colorMain"
+        app:tabTextAppearance="@style/CustomTablayout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

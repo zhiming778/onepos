@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.onepos.R;
+import com.example.onepos.model.Staff;
 import com.example.onepos.util.MLog;
 import com.example.onepos.view.adapter.OfficeNaviAdapter;
 import com.example.onepos.view.fragment.PermissionFragment;
@@ -23,9 +24,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.internal.schedulers.SchedulerPoolFactory;
-import io.reactivex.schedulers.Schedulers;
 
 public class OfficeActivity extends BaseActivity<OfficeViewModel> implements OfficeNaviAdapter.OnItemClickListener{
 
@@ -45,10 +43,10 @@ public class OfficeActivity extends BaseActivity<OfficeViewModel> implements Off
         setContentView(R.layout.activity_office);
         setSupportActionBar(findViewById(R.id.toolbar));
         lvNaviPane = findViewById(R.id.lv_navi);
-        String[] naviItems = getResources().getStringArray(R.array.navi_items);
+        final String[] naviItems = getResources().getStringArray(R.array.navi_items);
         adapter = new OfficeNaviAdapter(naviItems, this);
         lvNaviPane.setAdapter(adapter);
-        initRestaurantInfoFragment(naviItems[0]);
+        initRestaurantInfoFragment();
     }
 
     @Override
@@ -61,54 +59,46 @@ public class OfficeActivity extends BaseActivity<OfficeViewModel> implements Off
 
     }
 
-    private void initRestaurantInfoFragment(String title) {
+    private void initRestaurantInfoFragment() {
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, RestaurantInfoFragment.newInstance(), RestaurantInfoFragment.TAG)
                 .commit();
-        getSupportActionBar().setTitle(title);
     }
-    private void loadRestaurantInfoFragment(String title) {
+    private void loadRestaurantInfoFragment() {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, RestaurantInfoFragment.newInstance(), RestaurantInfoFragment.TAG)
                 .commit();
-        getSupportActionBar().setTitle(title);
     }
-    private void loadStaffFragment(String title) {
+    private void loadStaffFragment() {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, StaffFragment.newInstance(), StaffFragment.TAG)
                 .commit();
-        getSupportActionBar().setTitle(title);
     }
 
-    private void loadPermissionFragment(String title) {
+    private void loadPermissionFragment() {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, PermissionFragment.newInstance(), PermissionFragment.TAG)
                 .commit();
-        getSupportActionBar().setTitle(title);
     }
 
     private void clearFragments() {
         FragmentManager fm = getSupportFragmentManager();
-        List<Fragment> listFragment = fm.getFragments();
-        if (listFragment.size() > 0) {
-            for (Fragment fragment : listFragment) {
-                fm.beginTransaction()
-                        .remove(fragment)
-                        .commit();
-            }
-        }
-        listFragment.clear();
+        Fragment fragment;
+        if ((fragment = fm.findFragmentById(R.id.fragment_container))!=null)
+        fm.beginTransaction()
+                .remove(fragment)
+                .commit();
     }
     @Override
-    public void onItemClick(int pos, String title) {
+    public void onItemClick(int pos) {
         clearFragments();
         switch (pos) {
             case 0:
-                loadRestaurantInfoFragment(title);
+                loadRestaurantInfoFragment();
                 break;
             case 1:
-                loadStaffFragment(title);
+                loadStaffFragment();
                 break;
             case 2:
 
@@ -123,7 +113,7 @@ public class OfficeActivity extends BaseActivity<OfficeViewModel> implements Off
 
                 break;
             case 6:
-                loadPermissionFragment(title);
+                loadPermissionFragment();
                 break;
             default:
                 throw new IllegalArgumentException("The office navigation button doesn't exist.");
@@ -131,8 +121,8 @@ public class OfficeActivity extends BaseActivity<OfficeViewModel> implements Off
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         getResources().updateConfiguration(null, null); //To free all Themekey and LongSparseArray
     }
 }

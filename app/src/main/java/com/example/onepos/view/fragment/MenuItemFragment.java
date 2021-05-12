@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onepos.R;
-import com.example.onepos.util.MLog;
 import com.example.onepos.view.adapter.MenuItemAdapter;
 import com.example.onepos.viewmodel.OrderViewModel;
 
@@ -43,9 +42,15 @@ public class MenuItemFragment extends Fragment{
         rvMenuItem.setLayoutManager(gridLayoutManager);
         rvMenuItem.setAdapter(menuItemAdapter);
         orderViewModel = ViewModelProviders.of(getActivity()).get(OrderViewModel.class);
-        orderViewModel.getLiveListMenuItem().observe(this, list->{
+        orderViewModel.getLiveSublistMenuItem().observe(this, list->{
             menuItemAdapter.setListAndLevel(list, orderViewModel.isMainLevel());
         });
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        orderViewModel.getLiveSublistMenuItem().removeObservers(this);
     }
 }

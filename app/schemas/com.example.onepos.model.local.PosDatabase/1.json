@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2cdac4c4729fd245bd401e8f0b78db4f",
+    "identityHash": "d80a19caf2428eba97bb8b31eed673a1",
     "entities": [
       {
         "tableName": "table_address",
@@ -112,7 +112,7 @@
       },
       {
         "tableName": "table_customer_order",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `total` REAL NOT NULL, `payment_type` INTEGER NOT NULL, `order_type` INTEGER NOT NULL, `FK_customer_id` INTEGER, `FK_address_id` INTEGER, FOREIGN KEY(`FK_customer_id`) REFERENCES `table_customer`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`FK_address_id`) REFERENCES `table_address`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `total` REAL NOT NULL, `discount` REAL NOT NULL, `payment_type` INTEGER NOT NULL, `order_type` INTEGER NOT NULL, `FK_customer_id` INTEGER, `FK_address_id` INTEGER, FOREIGN KEY(`FK_customer_id`) REFERENCES `table_customer`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`FK_address_id`) REFERENCES `table_address`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -129,6 +129,12 @@
           {
             "fieldPath": "total",
             "columnName": "total",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "discount",
+            "columnName": "discount",
             "affinity": "REAL",
             "notNull": true
           },
@@ -191,19 +197,13 @@
       },
       {
         "tableName": "table_menu_item",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `price` REAL NOT NULL, `parent_id` INTEGER NOT NULL, `has_descendant` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `price` REAL NOT NULL, `parent_id` INTEGER NOT NULL, `has_descendant` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "price",
@@ -235,19 +235,13 @@
       },
       {
         "tableName": "table_modifier_item",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `price` REAL NOT NULL, `type` INTEGER NOT NULL, `FK_category_id` INTEGER NOT NULL, FOREIGN KEY(`FK_category_id`) REFERENCES `table_menu_item`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `price` REAL NOT NULL, `type` INTEGER NOT NULL, `FK_category_id` INTEGER NOT NULL, FOREIGN KEY(`FK_category_id`) REFERENCES `table_menu_item`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "price",
@@ -291,7 +285,7 @@
       },
       {
         "tableName": "table_order_menu_item",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quantity` INTEGER NOT NULL, `FK_customer_order_id` INTEGER NOT NULL, `discount` REAL NOT NULL, `cook_instruction` TEXT, `menu_id` INTEGER, `menu_name` TEXT, `menu_price` REAL, `menu_parent_id` INTEGER, `menu_has_descendant` INTEGER, FOREIGN KEY(`FK_customer_order_id`) REFERENCES `table_customer_order`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quantity` INTEGER NOT NULL, `discount` REAL NOT NULL, `FK_customer_order_id` INTEGER NOT NULL, `FK_item_id` INTEGER NOT NULL, `cook_instruction` TEXT, FOREIGN KEY(`FK_customer_order_id`) REFERENCES `table_customer_order`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`FK_item_id`) REFERENCES `table_menu_item`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -306,51 +300,27 @@
             "notNull": true
           },
           {
-            "fieldPath": "fkCustomerOrderId",
-            "columnName": "FK_customer_order_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "discount",
             "columnName": "discount",
             "affinity": "REAL",
             "notNull": true
           },
           {
+            "fieldPath": "fkCustomerOrderId",
+            "columnName": "FK_customer_order_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fkitemid",
+            "columnName": "FK_item_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "cookInstruction",
             "columnName": "cook_instruction",
             "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "item.id",
-            "columnName": "menu_id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "item.name",
-            "columnName": "menu_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "item.price",
-            "columnName": "menu_price",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "item.parentId",
-            "columnName": "menu_parent_id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "item.hasDescendant",
-            "columnName": "menu_has_descendant",
-            "affinity": "INTEGER",
             "notNull": false
           }
         ],
@@ -372,12 +342,23 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "table_menu_item",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "FK_item_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "table_order_modifier_item",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quantity` INTEGER NOT NULL, `FK_customer_order_id` INTEGER NOT NULL, `FK_order_menuitem_id` INTEGER NOT NULL, `menu_id` INTEGER, `menu_name` TEXT, `menu_price` REAL, `menu_type` INTEGER, `menu_FK_category_id` INTEGER, FOREIGN KEY(`FK_order_menuitem_id`) REFERENCES `table_order_menu_item`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`FK_customer_order_id`) REFERENCES `table_customer_order`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quantity` INTEGER NOT NULL, `discount` REAL NOT NULL, `FK_customer_order_id` INTEGER NOT NULL, `FK_item_id` INTEGER NOT NULL, `FK_order_menuitem_id` INTEGER NOT NULL, FOREIGN KEY(`FK_order_menuitem_id`) REFERENCES `table_order_menu_item`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`FK_customer_order_id`) REFERENCES `table_customer_order`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`FK_item_id`) REFERENCES `table_modifier_item`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -392,8 +373,20 @@
             "notNull": true
           },
           {
+            "fieldPath": "discount",
+            "columnName": "discount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
             "fieldPath": "fkCustomerOrderId",
             "columnName": "FK_customer_order_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fkitemid",
+            "columnName": "FK_item_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -402,36 +395,6 @@
             "columnName": "FK_order_menuitem_id",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "item.id",
-            "columnName": "menu_id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "item.name",
-            "columnName": "menu_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "item.price",
-            "columnName": "menu_price",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "item.type",
-            "columnName": "menu_type",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "item.fkCategoryId",
-            "columnName": "menu_FK_category_id",
-            "affinity": "INTEGER",
-            "notNull": false
           }
         ],
         "primaryKey": {
@@ -463,12 +426,173 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "table_modifier_item",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "FK_item_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "table_time_clock",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `punch_type` INTEGER NOT NULL, `date` INTEGER NOT NULL, `FK_staff_id` INTEGER NOT NULL, FOREIGN KEY(`FK_staff_id`) REFERENCES `table_staff`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "punchType",
+            "columnName": "punch_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "FKStaffId",
+            "columnName": "FK_staff_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "table_staff",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "FK_staff_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "table_menuitem_translation",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `FK_item_id` INTEGER NOT NULL, `lang` INTEGER NOT NULL, `title` TEXT, FOREIGN KEY(`FK_item_id`) REFERENCES `table_menu_item`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fkItemId",
+            "columnName": "FK_item_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lang",
+            "columnName": "lang",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "table_menu_item",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "FK_item_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "table_modifieritem_translation",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `FK_item_id` INTEGER NOT NULL, `lang` INTEGER NOT NULL, `title` TEXT, FOREIGN KEY(`FK_item_id`) REFERENCES `table_modifier_item`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fkItemId",
+            "columnName": "FK_item_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lang",
+            "columnName": "lang",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "table_modifier_item",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "FK_item_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "table_staff",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `title` INTEGER NOT NULL, `phone_number` TEXT, `date_of_birth` INTEGER NOT NULL, `address` TEXT, `ssn` TEXT, `password` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `title` INTEGER NOT NULL, `lang` INTEGER NOT NULL, `phone_number` TEXT, `date_of_birth` INTEGER NOT NULL, `address` TEXT, `ssn` TEXT, `password` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -489,7 +613,13 @@
             "notNull": true
           },
           {
-            "fieldPath": "phoneNumber",
+            "fieldPath": "lang",
+            "columnName": "lang",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneNum",
             "columnName": "phone_number",
             "affinity": "TEXT",
             "notNull": false
@@ -532,7 +662,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2cdac4c4729fd245bd401e8f0b78db4f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd80a19caf2428eba97bb8b31eed673a1')"
     ]
   }
 }

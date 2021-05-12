@@ -64,6 +64,17 @@ public class Receipt {
         recalcMoneyData();
     }
 
+    public List<OrderItem> getOrderItemGroup(int pos) {
+        if (pos == -1)
+            return listOrderItems;
+        int first = getFirstModifierItemPosition(pos);
+        int last = getLastModifierItemPosition(pos);
+        return listOrderItems.subList(first - 1, last+1);
+    }
+
+    public void addOrderItems(List<OrderItem> orderItems) {
+        listOrderItems.addAll(orderItems);
+    }
     private int getMenuItemPosition(int pos) {
         return getFirstModifierItemPosition(pos) - 1;
     }
@@ -200,6 +211,23 @@ public class Receipt {
         List<OrderModifierItem> list = new ArrayList<>();
         for (OrderItem orderItem : listOrderItems) {
             if (orderItem instanceof OrderModifierItem && orderItem.getMode() == OrderItem.MODE_ADDED) {
+                list.add((OrderModifierItem)orderItem);
+            }
+        }
+        return list.toArray(new OrderModifierItem[0]);
+    }
+
+    public OrderMenuItem[] getOrderMenuItems() {
+        List<OrderMenuItem> list = new ArrayList<>();
+        for (OrderItem orderItem : listOrderItems)
+            if (orderItem instanceof OrderMenuItem)
+                list.add((OrderMenuItem)orderItem);
+        return list.toArray(new OrderMenuItem[0]);
+    }
+    public OrderModifierItem[] getOrderModifierItems() {
+        List<OrderModifierItem> list = new ArrayList<>();
+        for (OrderItem orderItem : listOrderItems) {
+            if (orderItem instanceof OrderModifierItem) {
                 list.add((OrderModifierItem)orderItem);
             }
         }

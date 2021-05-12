@@ -30,6 +30,8 @@ public interface CustomerOrderDAO {
     @Query("SELECT * FROM table_customer_order WHERE id = :id")
     CustomerOrder getCustomerOrderById(long id);
 
+    @Query("SELECT * FROM table_customer_order WHERE FK_customer_id IN (SELECT id FROM table_customer WHERE phone_number = :phoneNumber)")
+    List<CustomerOrder> getCustomerOrderByPhoneNumber(String phoneNumber);
 
     @Update
     int updateCustomerOrder(CustomerOrder customerOrder);

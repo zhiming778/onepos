@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="@dimen/distance_med"
-    android:paddingEnd="@dimen/distance_med"
-    >
-
+    android:layout_height="wrap_content"
+    android:padding="@dimen/distance_small">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/tv_date" />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_order_type"
+        android:textSize="@dimen/text_size_med"
+        android:id="@+id/tv_date"
+        android:text="@string/label_date"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:id="@+id/tv_total" />
-</FrameLayout>
+        app:layout_constraintStart_toEndOf="@id/tv_date"
+        app:layout_constraintEnd_toStartOf="@id/tv_total"
+        android:textSize="@dimen/text_size_med"
+        android:id="@+id/tv_order_type"
+        android:text="@string/label_order_type"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="@id/tv_order_type"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="@dimen/text_size_med"
+        android:id="@+id/tv_total"
+        android:text="@string/label_total"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,7 @@ import com.example.onepos.util.MLog;
 
 public class OfficeNaviAdapter extends BaseAdapter implements View.OnClickListener {
 
-    private String[] list;
+    private final String[] list;
     private int indexSelected;
     private OnItemClickListener onItemClickListener;
     private int colorSelected;
@@ -21,10 +21,10 @@ public class OfficeNaviAdapter extends BaseAdapter implements View.OnClickListen
     private int count = 0;
 
     public interface OnItemClickListener {
-        void onItemClick(int pos, String title);
+        void onItemClick(int pos);
     }
 
-    public OfficeNaviAdapter(String[] list, Activity activity) {
+    public OfficeNaviAdapter(final String[] list, Activity activity) {
         this.list = list;
         onItemClickListener = (OnItemClickListener) activity;
         colorSelected = activity.getColor(R.color.colorSelected);
@@ -69,16 +69,13 @@ public class OfficeNaviAdapter extends BaseAdapter implements View.OnClickListen
             view.setBackgroundColor(colorUnselected);
         return view;
     }
-    public void clear() {
-        onItemClickListener = null;
-    }
     @Override
     public void onClick(View view) {
         int pos = (int) view.getTag();
         if (pos==indexSelected)
             return;
         indexSelected = pos;
-        onItemClickListener.onItemClick(pos, list[pos]);
+        onItemClickListener.onItemClick(pos);
         notifyDataSetChanged();
     }
 

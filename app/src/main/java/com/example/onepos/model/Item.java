@@ -1,19 +1,20 @@
 package com.example.onepos.model;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 public abstract class Item {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = PosContract.ItemEntry.COLUMN_ID)
     protected long id;
 
-    @ColumnInfo(name = "name")
-    protected String name;
-
-    @ColumnInfo(name = "price")
+    @ColumnInfo(name = PosContract.ItemEntry.COLUMN_PRICE)
     protected double price;
+
+    @Ignore
+    protected String title;
 
     public long getId() {
         return id;
@@ -23,12 +24,12 @@ public abstract class Item {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public double getPrice() {
@@ -38,4 +39,5 @@ public abstract class Item {
     public void setPrice(double price) {
         this.price = price;
     }
+
 }

@@ -1,6 +1,7 @@
 package com.example.onepos.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,22 +23,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onepos.R;
 import com.example.onepos.model.CustomerOrder;
-import com.example.onepos.model.MenuItem;
+import com.example.onepos.model.ItemTranslation;
 import com.example.onepos.model.OrderItem;
 import com.example.onepos.util.MLog;
 import com.example.onepos.util.OrderListener;
+import com.example.onepos.view.activity.ModifyActivity;
 import com.example.onepos.view.activity.OrderActivity;
 import com.example.onepos.view.adapter.CategoryAdapter;
 import com.example.onepos.view.adapter.ReceiptAdapter;
 import com.example.onepos.viewmodel.OrderViewModel;
 
-import java.util.List;
 import java.util.Locale;
 
 public class OrderFragment extends Fragment implements View.OnClickListener, OrderListener{
 
     public static final String TAG = "order_fragment";
     public static final String CUSTOMER_ORDER_ID = "customer_order_id";
+    public static final String TAG_CHANGE_LANG = "tag_change_lan";
 
     public static final int REQUEST_CATEGORY = 0;
     public static final int REQUEST_TYPE_SUBMENUITEM = 1;
@@ -60,7 +62,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
     private View rootView;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
-    private Button btnOrderType, btnPrint, btnCancel, btnDeliveryCharge;
+    private Button btnOrderType, btnPrint, btnCancel, btnDeliveryCharge, btnLang;
     private String[] ORDER_TYPES;
 
     public static OrderFragment newInstance(long id) {
@@ -88,7 +90,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         viewModel = ViewModelProviders.of(getActivity()).get(OrderViewModel.class);
-        viewModel.initData(getArguments().getLong(CUSTOMER_ORDER_ID, 0));
         FORMAT_CURRENCY = getString(R.string.format_currency);
         FORMAT_DISCOUNT = getString(R.string.format_discount);
         ORDER_TYPES = getResources().getStringArray(R.array.order_types);
@@ -98,18 +99,32 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_order, container, false);
+        boolean changeLang = false;
+        if (savedInstanceState!=null)
+            changeLang = savedInstanceState.getBoolean(TAG_CHANGE_LANG, false);
+        long id = 0;
+        if (getArguments()!=null)
+            id = getArguments().getLong(CUSTOMER_ORDER_ID, 0);
+        viewModel.initData(id, changeLang);
         initLayout(rootView);
-        viewModel.getLiveListCategory().observe(this, listCategory->{
-            updateFields(listCategory);
+        viewModel.getLiveListCategory().observe(this, list->{
+            categoryAdapter.setListCategory(list);
         });
+        if (changeLang||id>0)
+            viewModel.getLiveFlag().observe(this, flag->{
+                if (flag == 6) {
+                    updateFields();
+                }
+                viewModel.getLiveFlag().removeObservers(this);
+            });
         return rootView;
     }
 
 
-    private void updateFields(List<MenuItem> listCategory) {
-        categoryAdapter.setListCategory(listCategory);
+    private void updateFields() {
         if (viewModel.getMode()== OrderActivity.MODE_CREATE_ORDER)
             return;
+        btnOrderType.setText(ORDER_TYPES[viewModel.getOrderType()]);
         setMoneyFields();
         receiptAdapter.notifyDataSetChanged();
     }
@@ -140,7 +155,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         tvSubtotalTitle = viewSubtotal.findViewById(R.id.tv_name);
         setMoneyFields();
 
-        btnDeliveryCharge = rootView.findViewById(R.id.btn_delivery_charge);
+        btnDeliveryCharge = rootView.findViewById(R.id.btn_delivery_fee);
         btnDeliveryCharge.setOnClickListener(this);
         btnOrderType = rootView.findViewById(R.id.btn_order_type);
         btnOrderType.setOnClickListener(this);
@@ -148,6 +163,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         setDeliverChargeVisibility();
         btnPrint = rootView.findViewById(R.id.btn_print);
         btnPrint.setOnClickListener(this);
+        btnLang = rootView.findViewById(R.id.btn_lang);
+        btnLang.setOnClickListener(this);
         btnCancel = rootView.findViewById(R.id.btn_cancel);
         btnCancel.setLongClickable(true);
         btnCancel.setOnLongClickListener(view -> {
@@ -170,25 +187,29 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         if (!hidden) {
             btnOrderType.setText(ORDER_TYPES[viewModel.getOrderType()]);
             setDeliverChargeVisibility();
+            viewModel.setIndexSelectedReceipt(-1);
+            receiptAdapter.notifyDataSetChanged();
         }
     }
 
     private void setMoneyFields() {
-        tvSubtotalNum.setText(String.format(FORMAT_CURRENCY, viewModel.getReceipt().getCustomerOrder().getSubtotal()));
-        tvTaxNum.setText(String.format(FORMAT_CURRENCY, viewModel.getReceipt().getCustomerOrder().getTax()));
-        tvTotalNum.setText(String.format(FORMAT_CURRENCY, viewModel.getReceipt().getCustomerOrder().getTotal()));
+        final CustomerOrder customerOrder = viewModel.getReceipt().getCustomerOrder();
+        tvSubtotalNum.setText(String.format(FORMAT_CURRENCY, customerOrder.getSubtotal()));
+        tvTaxNum.setText(String.format(FORMAT_CURRENCY, customerOrder.getTax()));
+        tvTotalNum.setText(String.format(FORMAT_CURRENCY, customerOrder.getTotal()));
         String titileSubtotal = getString(R.string.label_subtotal);
         tvSubtotalTitle.setText(titileSubtotal);
-        if (viewModel.getReceipt().getCustomerOrder().getDiscount()!=0)
-            tvSubtotalTitle.append(String.format(FORMAT_DISCOUNT, (int)(viewModel.getReceipt().getCustomerOrder().getDiscount() * 100)));
+        if (customerOrder.getDiscount()!=0)
+            tvSubtotalTitle.append(String.format(FORMAT_DISCOUNT, (int)(customerOrder.getDiscount() * 100)));
     }
 
     private void initMenuItemFragment() {
-        MenuItemFragment menuItemFragment = MenuItemFragment.newInstance();
-        getChildFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_container, menuItemFragment, MenuItemFragment.TAG)
-                .commit();
+        FragmentManager fm = getChildFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(MenuItemFragment.TAG);
+        if (fragment==null)
+            fm.beginTransaction()
+                    .add(R.id.fragment_container, MenuItemFragment.newInstance(), MenuItemFragment.TAG)
+                    .commit();
     }
 
 
@@ -197,7 +218,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
-
+            case R.id.btn_lang:
+                switchLanguage();
+                break;
             case R.id.btn_order_type:
                 CustomerInfoFragment customerInfoFragment = CustomerInfoFragment.newInstance();
                 getActivity().getSupportFragmentManager()
@@ -207,17 +230,21 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
                         .commit();
                 break;
             case R.id.btn_print:
-                Configuration config = getResources().getConfiguration();
-                config.setLocale(Locale.SIMPLIFIED_CHINESE);
-                getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-                getActivity().recreate();
-                /*if (viewModel.getReceipt().getNumOfItems() != 0) {
-                    viewModel.printTicket();
+                if (viewModel.getReceipt().getNumOfItems() != 0) {
                     viewModel.saveOrder();
+                    viewModel.printTicket();
+                    if (viewModel.getMode()==OrderActivity.MODE_MODIFY_ORDER) {
+                        Intent intent = new Intent();
+                        final CustomerOrder customerOrder = viewModel.getReceipt().getCustomerOrder();
+                        intent.putExtra(ModifyActivity.EXTRA_ID, customerOrder.getId());
+                        intent.putExtra(ModifyActivity.EXTRA_ORDER_TYPE, customerOrder.getOrderType());
+                        intent.putExtra(ModifyActivity.EXTRA_TOTAL, customerOrder.getTotal());
+                        getActivity().setResult(ModifyActivity.RESULT_UPDATE_ORDER, intent);
+                    }
                     getActivity().finish();
                 }
                 else
-                    Toast.makeText(getActivity(), R.string.empty_order, Toast.LENGTH_SHORT).show();*/
+                    Toast.makeText(getActivity(), R.string.msg_empty_order, Toast.LENGTH_SHORT).show();
                 break;
             default:
                 throw new IllegalArgumentException("The button id doesn't exist.");
@@ -241,20 +268,19 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
                             .commit();
                 }
                 viewModel.setMainLevel(true);
-                viewModel.setIndexSelectedCategory(index);
+                viewModel.setIndexSelectxedCategory(index);
                 break;
             }
             case REQUEST_TYPE_SUBMENUITEM:
-                long id = viewModel.getLiveListMenuItem().getValue().get(index).getId();
+                long id = viewModel.getLiveSublistMenuItem().getValue().get(index).getId();
                 viewModel.setMainLevel(false);
-                viewModel.getMenuItems(id);
+                viewModel.getMenuItemsByCategory(id);
                 break;
 
             case REQUEST_TYPE_ADDTOORDER:
                 viewModel.setMainLevel(true);
-                viewModel.getMenuItems(viewModel.getLiveListCategory().getValue()
-                        .get(viewModel.getIndexSelectedCategory()).getId());
                 viewModel.addMenuItemToReceipt(index);
+                viewModel.setIndexSelectxedCategory(viewModel.getIndexSelectedCategory());
                 receiptAdapter.resetIndexSelected();
                 viewModel.setIndexSelectedReceipt(-1);
                 receiptAdapter.notifyItemInserted(viewModel.getReceipt().getNumOfItems()-1);
@@ -265,30 +291,30 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
                 receiptAdapter.resetIndexSelected();
                 viewModel.setIndexSelectedReceipt(-1);
                 viewModel.setMainLevel(true);
-                viewModel.getMenuItems(viewModel.getLiveListCategory().getValue().get(viewModel.getIndexSelectedCategory()).getId());
+                viewModel.setIndexSelectxedCategory(viewModel.getIndexSelectedCategory());
                 break;
 
             case REQUEST_RECEIPT: {
                 viewModel.setIndexSelectedReceipt(index);
-                if (index != -1) {
-                    FragmentManager fm = getChildFragmentManager();
-                    ModifierFragment modifierFragment = (ModifierFragment) fm.findFragmentByTag(ModifierFragment.TAG);
-                    if (modifierFragment != null) {
-                        if (modifierFragment.isHidden()) {
-                            fm.beginTransaction()
-                                    .show(modifierFragment)
-                                    .hide(fm.findFragmentByTag(MenuItemFragment.TAG))
-                                    .commit();
-                        }
-                        modifierFragment.setCategoryId(viewModel.getReceipt().getItemCategoryId(index));
-                    } else {
-                        modifierFragment = ModifierFragment.newInstance();
+
+                if (index == -1)
+                    return;
+                FragmentManager fm = getChildFragmentManager();
+                final Fragment modifierFragment = fm.findFragmentByTag(ModifierFragment.TAG);
+                if (modifierFragment != null) {
+                    if (modifierFragment.isHidden()) {
                         fm.beginTransaction()
-                                .add(R.id.fragment_container, modifierFragment, ModifierFragment.TAG)
+                                .show(modifierFragment)
                                 .hide(fm.findFragmentByTag(MenuItemFragment.TAG))
                                 .commit();
                     }
-
+                    long categoryId = viewModel.getReceipt().getItemCategoryId(index);
+                    viewModel.getModifierItemsByCategory(categoryId);
+                } else {
+                    fm.beginTransaction()
+                            .add(R.id.fragment_container, ModifierFragment.newInstance(), ModifierFragment.TAG)
+                            .hide(fm.findFragmentByTag(MenuItemFragment.TAG))
+                            .commit();
                 }
                 break;
             }
@@ -298,7 +324,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
                     return;
                 if (viewModel.getMode()==OrderActivity.MODE_MODIFY_ORDER && viewModel.getReceipt().get(viewModel.getIndexSelectedReceipt()).getMode()!= OrderItem.MODE_ADDED)
                     return;
-                viewModel.getReceipt().addModifierItem(viewModel.getIndexSelectedReceipt(), viewModel.getLiveListModifier().getValue().get(index));
+                viewModel.getReceipt().addModifierItem(viewModel.getIndexSelectedReceipt(), viewModel.getModifierItems().get(index));
                 receiptAdapter.notifyDataSetChanged();
                 setMoneyFields();
                 break;
@@ -353,8 +379,32 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         }
     }
 
+    private void switchLanguage() {
+        if (viewModel.getLang() == ItemTranslation.LANG_US) {
+            viewModel.setLang(ItemTranslation.LANG_CN);
+            Configuration config = getResources().getConfiguration();
+            config.setLocale(Locale.CHINA);
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+            getActivity().recreate();
+        }
+        else
+            if (viewModel.getLang() == ItemTranslation.LANG_CN) {
+                viewModel.setLang(ItemTranslation.LANG_US);
+                Configuration config = getResources().getConfiguration();
+                config.setLocale(Locale.US);
+                getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+                getActivity().recreate();
+            }
+    }
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean(TAG_CHANGE_LANG, true);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }

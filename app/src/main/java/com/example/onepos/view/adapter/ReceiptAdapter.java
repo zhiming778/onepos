@@ -14,6 +14,7 @@ import com.example.onepos.model.OrderItem;
 import com.example.onepos.model.OrderMenuItem;
 import com.example.onepos.model.OrderModifierItem;
 import com.example.onepos.model.Receipt;
+import com.example.onepos.util.MLog;
 import com.example.onepos.util.OrderListener;
 import com.example.onepos.view.fragment.OrderFragment;
 
@@ -82,10 +83,9 @@ public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ItemView
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int pos) {
         OrderItem orderItem = receipt.get(pos);
+        MLog.d("mode = "+orderItem.getMode());
         holder.tvPrice.setText(String.format(PRICE_FORMAT, orderItem.getPrice()));
-        holder.tvName.setText(orderItem.getItem().getName());
-        if (orderItem.getDiscount()!=0)
-            holder.tvName.append(String.format(DISCOUNT_FORMAT, (int)(orderItem.getDiscount() * 100)));
+        holder.tvName.setText(orderItem.getTitle(DISCOUNT_FORMAT));
         if (getItemViewType(pos)==View_TYPE_MODIFIERITEM) {
             if (orderItem.getQuantity() > 1) {
                 holder.tvQuantity.setVisibility(View.VISIBLE);

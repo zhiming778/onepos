@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -51,6 +52,7 @@ public class RestaurantInfoFragment extends PreferenceFragmentCompat implements 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Restaurant Info");
         View view = super.onCreateView(inflater, container, savedInstanceState);
         view.setBackgroundColor(getContext().getColor(R.color.colorWidgetBackground));
         return view;

@@ -1,5 +1,6 @@
 package com.example.onepos.view.activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -7,19 +8,25 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.example.onepos.model.ItemTranslation;
+import com.example.onepos.model.Staff;
 import com.example.onepos.view.fragment.PasswordDialogFragment;
 import com.example.onepos.viewmodel.BaseViewModel;
 import com.example.onepos.viewmodel.ViewModelFactory;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.internal.schedulers.SchedulerPoolFactory;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.internal.schedulers.SchedulerPoolFactory;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public abstract class BaseActivity<T extends BaseViewModel> extends AppCompatActivity{
     T viewModel;
+    static final String EXTRA_STAFF = "extra_staff";
 
     @Inject
     ViewModelFactory factory;
@@ -66,6 +73,19 @@ public abstract class BaseActivity<T extends BaseViewModel> extends AppCompatAct
         removeObserver();
     }
 
+    void changeLanguage() {
+        final Staff staff = viewModel.getStaff();
+        if (staff==null)
+            return;
+        final int lang = staff.getLang();
+        final Configuration config = getResources().getConfiguration();
+        if (lang == ItemTranslation.LANG_US)
+            config.setLocale(Locale.US);
+        if (lang == ItemTranslation.LANG_CN)
+            config.setLocale(Locale.CHINA);
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+
+    }
     abstract void bindObserver();
     abstract void removeObserver();
 }

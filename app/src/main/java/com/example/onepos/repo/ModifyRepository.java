@@ -10,7 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
+import io.reactivex.rxjava3.core.Single;
 
 public class ModifyRepository extends BaseRepository{
 
@@ -19,16 +19,11 @@ public class ModifyRepository extends BaseRepository{
         super(application);
     }
 
-    public Single<List<CustomerOrder>> getCustomerOrderByOrderType(int orderType, long startMillis, long endMillis) {
+    public Single<List<CustomerOrder>> getCustomerOrderByDate(long startMillis, long endMillis) {
         return Single.create(emitter -> {
             CustomerOrderDAO dao = PosDatabase.getInstance(application).customerOrderDAO();
-            if (orderType==-1)
-                emitter.onSuccess(dao.getCustomerOrderByDate(startMillis, endMillis));
-            else
-                if (orderType>=0&&orderType<4)
-                    emitter.onSuccess(dao.getCustomerOrderByOrderTypeAndDate(orderType, startMillis, endMillis));
-                else
-                    emitter.onError(new Throwable());
+            final List<CustomerOrder> customerOrders = dao.getCustomerOrderByDate(startMillis, endMillis);
+            emitter.onSuccess(customerOrders);
         });
     }
 }

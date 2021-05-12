@@ -41,13 +41,14 @@ public class Address{
     @ColumnInfo(name = "FK_customer_id")
     private long fkCustomerId;
 
-    public Address(String streetAddress, String aptRoom, int zipcode, String city, String deliveryInstruction) {
+    public Address(String streetAddress, String aptRoom, int zipcode, String city, String deliveryInstruction, double deliveryCharge) {
         this.streetAddress = streetAddress;
         this.aptRoom = aptRoom;
         this.zipcode = zipcode;
         this.city = city;
         this.deliveryInstruction = deliveryInstruction;
         this.fkCustomerId = -1;
+        this.deliveryCharge = 0;
     }
     @Ignore
     public Address(Long id, String streetAddress, String aptRoom, int zipcode, String city, String deliveryInstruction) {
@@ -130,7 +131,8 @@ public class Address{
     @NonNull
     @Override
     public String toString() {
-        return id+" street = " + streetAddress + " apt/rm = " + aptRoom + " city = " + city;
+        String fullAddress = streetAddress + ", " + city;
+        return zipcode == 0 ? fullAddress : fullAddress + ", " + zipcode;
     }
 
     @Override

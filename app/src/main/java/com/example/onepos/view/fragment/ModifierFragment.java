@@ -1,16 +1,11 @@
 package com.example.onepos.view.fragment;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,11 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onepos.R;
-import com.example.onepos.model.ModifierItem;
-import com.example.onepos.model.OrderItem;
-import com.example.onepos.util.MLog;
 import com.example.onepos.util.OrderListener;
-import com.example.onepos.view.activity.OrderActivity;
 import com.example.onepos.view.adapter.ModifierAdapter;
 import com.example.onepos.view.dialog.DiscountDialog;
 import com.example.onepos.viewmodel.OrderViewModel;
@@ -37,10 +28,10 @@ public class ModifierFragment extends Fragment implements View.OnClickListener {
     private static final String CATEGORY_ID = "category_id";
     private OrderViewModel orderViewModel;
     private ModifierAdapter modifierAdapter;
-    private long categoryId;
     private RecyclerView rvModifier;
     private GridLayoutManager gridLayoutManager;
     private View rootView;
+    private TabLayout tabLayout;
     private Button btnPlus, btnMinus, btnDiscount;
     private OrderListener listener;
 
@@ -66,10 +57,13 @@ public class ModifierFragment extends Fragment implements View.OnClickListener {
         listener = (OrderListener) getParentFragment();
         initLayout(rootView);
         int indexSelected = orderViewModel.getIndexSelectedReceipt();
-        if (indexSelected!=-1)
-            categoryId = orderViewModel.getReceipt().getItemCategoryId(indexSelected);
-        orderViewModel.getLiveListModifier().observe(this, modifierAdapter::setList);
-        orderViewModel.getModifierItems(modifierAdapter.getCurrentModifierType(), categoryId);
+        if (indexSelected!=-1) {
+            long categoryId = orderViewModel.getReceipt().getItemCategoryId(indexSelected);
+            orderViewModel.getModifierItemsByCategory(categoryId);
+        }
+        orderViewModel.getLiveListModifier().observe(this, list->{
+            modifierAdapter.setList(orderViewModel.getModifierItemsByType(tabLayout.getSelectedTabPosition()+1));
+        });
         return rootView;
     }
 
@@ -86,14 +80,13 @@ public class ModifierFragment extends Fragment implements View.OnClickListener {
         modifierAdapter = new ModifierAdapter(getParentFragment());
         rvModifier.setAdapter(modifierAdapter);         //TODO move some lines to onAttach()
         ((DefaultItemAnimator)(rvModifier.getItemAnimator())).setSupportsChangeAnimations(false);
-        TabLayout tabLayout = rootView.findViewById(R.id.tabs_modifier);
+        tabLayout = rootView.findViewById(R.id.tabs_modifier);
         loadTabs(tabLayout);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int type = tab.getPosition() +1;
-                modifierAdapter.setCurrentModifierType(type);
-                orderViewModel.getModifierItems(type, categoryId);
+                modifierAdapter.setList(orderViewModel.getModifierItemsByType(type));
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
@@ -112,12 +105,12 @@ public class ModifierFragment extends Fragment implements View.OnClickListener {
             tabLayout.addTab(tab);
         }
     }
-    void setCategoryId(long categoryId) {
+    /*void setCategoryId(long categoryId) {
         if (this.categoryId!=categoryId) {
             this.categoryId = categoryId;
             orderViewModel.getModifierItems(modifierAdapter.getCurrentModifierType(), categoryId);
         }
-    }
+    }*/
 
     @Override
     public void onClick(View view) {

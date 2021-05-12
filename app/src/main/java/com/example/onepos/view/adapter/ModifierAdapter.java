@@ -19,14 +19,11 @@ import java.util.List;
 public class ModifierAdapter extends RecyclerView.Adapter<ModifierAdapter.ModifierViewHolder> {
 
     private List<ModifierItem> listModifier;
-    private int currentModifierType;
     private OrderListener listener;
-
 
     public ModifierAdapter(Fragment fragment)
     {
         this.listener = (OrderListener)fragment;
-        currentModifierType = 0;
     }
 
     @Override
@@ -52,7 +49,7 @@ public class ModifierAdapter extends RecyclerView.Adapter<ModifierAdapter.Modifi
 
     @Override
     public void onBindViewHolder(@NonNull ModifierViewHolder holder, int pos) {
-        holder.setModifierItem(listModifier.get(pos).getName());
+        holder.setModifierItem(listModifier.get(pos).getTitle());
     }
 
 
@@ -75,21 +72,10 @@ public class ModifierAdapter extends RecyclerView.Adapter<ModifierAdapter.Modifi
         }
     }
 
-    public int getCurrentModifierType() {
-        return currentModifierType;
-    }
-
-    public void setCurrentModifierType(int currentModifierType) {
-        this.currentModifierType = currentModifierType;
-    }
 
     public void setList(List<ModifierItem> list) {
-        if (listModifier == null) {
-            listModifier = list;
-        } else {
-            listModifier.clear();
-            listModifier.addAll(list);
-        }
+        listModifier = list;
+        //TODO
         notifyDataSetChanged();
     }
 
@@ -99,4 +85,5 @@ public class ModifierAdapter extends RecyclerView.Adapter<ModifierAdapter.Modifi
         listModifier = null;
         listener = null;
     }
+
 }

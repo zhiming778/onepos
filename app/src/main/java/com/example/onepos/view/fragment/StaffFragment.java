@@ -11,12 +11,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onepos.R;
+import com.example.onepos.util.MLog;
 import com.example.onepos.view.adapter.StaffAdapter;
 import com.example.onepos.viewmodel.OfficeViewModel;
 
@@ -27,7 +29,6 @@ public class StaffFragment extends Fragment implements StaffAdapter.OnItemClickL
     private OfficeViewModel viewModel;
     private RecyclerView rvStaff;
     private LinearLayoutManager layoutManager;
-    private MenuItem menuItem;
 
     public static StaffFragment newInstance() {
         StaffFragment fragment = new StaffFragment();
@@ -53,10 +54,12 @@ public class StaffFragment extends Fragment implements StaffAdapter.OnItemClickL
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Staff");
         rvStaff = (RecyclerView) inflater.inflate(R.layout.fragment_staff, container, false);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvStaff.setLayoutManager(layoutManager);
-        adapter = new StaffAdapter(this);
+        final String[] TITLES = getResources().getStringArray(R.array.staff_titles);
+        adapter = new StaffAdapter(this, TITLES);
         rvStaff.setAdapter(adapter);
         setHasOptionsMenu(true);
         return rvStaff;
@@ -66,24 +69,15 @@ public class StaffFragment extends Fragment implements StaffAdapter.OnItemClickL
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = ViewModelProviders.of(getActivity()).get(OfficeViewModel.class);
-        viewModel.getLiveCursorStaff().observe(this, cursor -> {
-            adapter.setCursor(cursor);
-        });
+        viewModel.getLiveListStaff().observe(this, adapter::setList);
         viewModel.getAllStaff();
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden)
-            viewModel.getAllStaff();
     }
 
     private void loadStaffInfoFragment(long id) {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, StaffInfoFragment.newInstance(id), StaffInfoFragment.TAG)
-                .hide(this)
+                .remove(this)
                 .commit();
     }
 
@@ -91,14 +85,13 @@ public class StaffFragment extends Fragment implements StaffAdapter.OnItemClickL
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_staff, menu);
-        menuItem = menu.findItem(R.id.action_new_staff);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_new_staff:
-                loadStaffInfoFragment(-1);
+                loadStaffInfoFragment(0);
                 return true;
 
             default:
@@ -109,7 +102,6 @@ public class StaffFragment extends Fragment implements StaffAdapter.OnItemClickL
     @Override
     public void onDestroyOptionsMenu() {
         super.onDestroyOptionsMenu();
-        menuItem.setIcon(null);
     }
 
     @Override

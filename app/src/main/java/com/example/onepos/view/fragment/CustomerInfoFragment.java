@@ -19,29 +19,37 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onepos.R;
 import com.example.onepos.model.Address;
 import com.example.onepos.model.CustomerOrder;
+import com.example.onepos.util.MLog;
 import com.example.onepos.util.PhoneNumberTextWatcher;
+import com.example.onepos.view.AddressCompletionEditText;
 import com.example.onepos.view.CustomKeyboard;
+import com.example.onepos.view.adapter.OrderHistoryAdapter;
 import com.example.onepos.viewmodel.OrderViewModel;
 
 import java.util.List;
 
-public class CustomerInfoFragment extends Fragment implements View.OnClickListener, PhoneNumberTextWatcher.OnNumberCompleteListener, View.OnFocusChangeListener {
+public class CustomerInfoFragment extends Fragment implements View.OnClickListener, PhoneNumberTextWatcher.OnNumberCompleteListener, View.OnFocusChangeListener , OrderHistoryAdapter.OrderHistoryListener {
 
     public static final String TAG = "customer_info_fragment";
-    private OrderViewModel orderViewModel;
-    private Button btnOrderType, btnStreet, btnCancel, btnConfirm;
-    private EditText etPhoneNum, etName, etStreetAddress, etCity;
+    private OrderViewModel viewModel;
+    private Button btnOrderType, btnStreet, btnCancel, btnConfirm, btnDeliveryFee;
+    private EditText etPhoneNum, etName, etCity;
+    private AddressCompletionEditText etStreetAddress;
     private EditText etAptRm, etZipcode, etInstruction;
     private InputConnection icPhoneNumber, icName, icStreetAddress, icCity, icAptRom, icZipcode, icInstruction;
     private CustomKeyboard keyboard;
+    private RecyclerView rvOrderHistory;
     private View rootView;
     private EditorInfo editorInfo;
     private PhoneNumberTextWatcher textWatcher;
     private String[] ORDER_TYPES;
+    private OrderHistoryAdapter adapter;
 
     public static CustomerInfoFragment newInstance() {
         CustomerInfoFragment customerInfoFragment = new CustomerInfoFragment();
@@ -62,7 +70,7 @@ public class CustomerInfoFragment extends Fragment implements View.OnClickListen
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        orderViewModel = ViewModelProviders.of(getActivity()).get(OrderViewModel.class);
+        viewModel = ViewModelProviders.of(getActivity()).get(OrderViewModel.class);
         ORDER_TYPES = getResources().getStringArray(R.array.order_types);
     }
 
@@ -95,8 +103,13 @@ public class CustomerInfoFragment extends Fragment implements View.OnClickListen
         etName = rootView.findViewById(R.id.et_name);
         etPhoneNum = rootView.findViewById(R.id.et_phone_num);
         etStreetAddress = rootView.findViewById(R.id.et_street);
-        etAptRm.setShowSoftInputOnFocus(false);
         etStreetAddress.setShowSoftInputOnFocus(false);
+        etStreetAddress.setOnAddressChangeListneer(partialAddress->{
+            SuggestAddressDialogFragment fragment = SuggestAddressDialogFragment.newInstance(partialAddress);
+            fragment.setListener(this::setAddressFields);
+            fragment.show(getChildFragmentManager(), SuggestAddressDialogFragment.TAG);
+        });
+        etAptRm.setShowSoftInputOnFocus(false);
         etPhoneNum.setShowSoftInputOnFocus(false);
         etName.setShowSoftInputOnFocus(false);
         etCity.setShowSoftInputOnFocus(false);
@@ -111,23 +124,32 @@ public class CustomerInfoFragment extends Fragment implements View.OnClickListen
         icPhoneNumber = etPhoneNum.onCreateInputConnection(editorInfo);
         icInstruction = etInstruction.onCreateInputConnection(editorInfo);
         icStreetAddress = etStreetAddress.onCreateInputConnection(editorInfo);
-        orderViewModel.getLiveCustomer().observe(this, customer -> {
+        if (viewModel.getLiveCustomer().getValue()!=null)
+            etPhoneNum.setText(viewModel.getLiveCustomer().getValue().getPhoneNumber());
+        viewModel.resetLiveListAddress();
+        viewModel.getLiveCustomer().observe(this, customer -> {
             etName.setText(customer.getName());
         });
-        orderViewModel.getLiveListAddress().observe(this, list->{
-            loadAddresses(list);
-        });
+        viewModel.getLiveListAddress().observe(this, this::loadAddresses);
         btnCancel = rootView.findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(this);
         btnConfirm = rootView.findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(this);
+        btnDeliveryFee = rootView.findViewById(R.id.btn_delivery_fee);
+        btnDeliveryFee.setOnClickListener(this);
         btnOrderType = rootView.findViewById(R.id.btn_order_type);
-        btnOrderType.setText(ORDER_TYPES[orderViewModel.getOrderType()]);
+        btnOrderType.setText(ORDER_TYPES[viewModel.getOrderType()]);
         btnOrderType.setOnClickListener(this);
         btnStreet = rootView.findViewById(R.id.btn_street);
         btnStreet.setOnClickListener(this);
         textWatcher = new PhoneNumberTextWatcher(this);
         etPhoneNum.addTextChangedListener(textWatcher);
+        rvOrderHistory = rootView.findViewById(R.id.rv_history);
+        rvOrderHistory.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        final String[] ORDER_TYPES = getResources().getStringArray(R.array.order_types);
+        final String FORMAT_CURRENCY = getString(R.string.format_currency);
+        adapter = new OrderHistoryAdapter(ORDER_TYPES, FORMAT_CURRENCY, this);
+        rvOrderHistory.setAdapter(adapter);
     }
 
     private void setFocusChangeListeners() {
@@ -153,11 +175,11 @@ public class CustomerInfoFragment extends Fragment implements View.OnClickListen
                     .setItems(arrAddress, (dialogInterface, i) -> {
                         setAddressFields(list.get(i));
                         Address address = list.get(i).clone();
-                        orderViewModel.setAddress(address);
+                        viewModel.setAddress(address);
                         dialogInterface.dismiss();
                     })
                     .setNegativeButton(R.string.btn_new_address, (dialogInterface, i) -> {
-                        orderViewModel.setAddress(null);
+                        viewModel.setAddress(null);
                         clearAddressFields();
                     })
                     .setTitle(R.string.title_choose_address)
@@ -179,26 +201,29 @@ public class CustomerInfoFragment extends Fragment implements View.OnClickListen
         int id = view.getId();
         switch (id) {
             case R.id.btn_street:
-                orderViewModel.getAddressesByCustomerId();
+                viewModel.getAddressesByCustomerId();
                 break;
             case R.id.btn_cancel:
                 getActivity().onBackPressed();
                 break;
             case R.id.btn_confirm:
-                if (orderViewModel.getOrderType() == CustomerOrder.ORDER_TYPE_DELIVERY){
+                if (viewModel.getOrderType() == CustomerOrder.ORDER_TYPE_DELIVERY){
                     String zipcode = etZipcode.getText().toString();
-                    orderViewModel.setAddress(etStreetAddress.getText().toString(), etAptRm.getText().toString()
-                            , zipcode.equals("")?0:Integer.parseInt(zipcode), etCity.getText().toString(), etInstruction.getText().toString());
+                    viewModel.setAddress(etStreetAddress.getText().toString(), etAptRm.getText().toString()
+                            , zipcode.equals("")?0:Integer.parseInt(zipcode), etCity.getText().toString(), etInstruction.getText().toString(), 0);//TODO
                 }
                 else
-                    orderViewModel.setAddress(null);
-                orderViewModel.setCustomer(etPhoneNum.getText().toString(), etName.getText().toString());
+                    viewModel.setAddress(null);
+                viewModel.setCustomer(etPhoneNum.getText().toString(), etName.getText().toString());
                 loadOrderFragment();
+                break;
+            case R.id.btn_delivery_fee:
+                MapDialogFragment.newInstance(etStreetAddress.getText().toString()+" "+etCity.getText().toString()).show(getChildFragmentManager(), MapDialogFragment.TAG);
                 break;
             case R.id.btn_order_type:
                 Dialog dialog = new AlertDialog.Builder(getActivity())
                         .setItems(ORDER_TYPES, (dialogInterface, pos)->{
-                            orderViewModel.setOrderType(pos);
+                            viewModel.setOrderType(pos);
                             btnOrderType.setText(ORDER_TYPES[pos]);
                         })
                         .create();
@@ -233,7 +258,14 @@ public class CustomerInfoFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onNumberCompleted(String phoneNumber) {
-        orderViewModel.getCustomerByPhoneNumber(phoneNumber);
+        viewModel.getCustomerByPhoneNumber(phoneNumber);
+        viewModel.getCustomerOrderByPhoneNumber(phoneNumber);
+        viewModel.getLiveFlag().observe(this, flag->{
+            viewModel.getLiveFlag().removeObservers(this);
+            if (flag == 9) {
+                adapter.setList(viewModel.getCustomerOrders());
+            }
+        });
     }
 
     private void setAddressFields(Address address) {
@@ -250,6 +282,12 @@ public class CustomerInfoFragment extends Fragment implements View.OnClickListen
         etCity.setText(null);
         etInstruction.setText(null);
         etZipcode.setText(null);
+    }
+
+    @Override
+    public void orderHistoryClick(int pos) {
+        OrderHistoryDialogFragment.newInstance(pos)
+                .show(getChildFragmentManager(), OrderHistoryDialogFragment.TAG);
     }
 
     @Override

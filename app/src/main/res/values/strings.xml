@@ -29,6 +29,7 @@
     <string name="title_restaurant_name">Restaurant Name</string>
     <string name="title_new_staff">New Staff</string>
     <string name="title_password_dialog">Please Enter Your Password</string>
+    <string name="title_map_dialog">Map</string>
     <string name="title_choose_birth">Choose Date of Birth</string>
     <string name="title_choose_address">Choose An Address</string>
 
@@ -36,6 +37,7 @@
     <string name="btn_print">Print</string>
     <string name="btn_modifier">Modifier</string>
     <string name="btn_pay">Pay</string>
+    <string name="btn_lang">to Chinese</string>
     <string name="btn_plus">+</string>
     <string name="btn_minus">-</string>
     <string name="btn_punch_in">Punch In</string>
@@ -49,7 +51,12 @@
     <string name="btn_edit_staff">Edit Staff</string>
     <string name="btn_return">&lt;---</string>
     <string name="btn_discount_type_order">Order</string>
-    <string name="btn_discount_type_item">This item</string>
+    <string name="btn_discount_type_item">This Item</string>
+    <string name="btn_street">Street</string>
+    <string name="btn_delivery_fee">Delivery Fee</string>
+    <string name="btn_reorder_item">Reorder Item</string>
+    <string name="btn_reorder_all">Reorder All</string>
+
 
 
     <string name="format_currency" translatable="false">%.2f</string>
@@ -61,11 +68,11 @@
     <string name="label_phone_number">Tel#</string>
     <string name="label_name">Name</string>
     <string name="label_birth">Date of Birth</string>
-    <string name="label_street">Street</string>
     <string name="label_address">Address</string>
     <string name="label_password">Password</string>
     <string name="label_title">Title</string>
     <string name="label_ssn">SSN</string>
+    <string name="label_lang">Language</string>
     <string name="label_apt_rm">Apt/RM</string>
     <string name="label_zipcode">Zipcode</string>
     <string name="label_city">City</string>
@@ -74,8 +81,13 @@
     <string name="label_total">Total:</string>
     <string name="label_tax">Tax:</string>
     <string name="label_subtotal">Subtotal:</string>
+    <string name="label_date">Date:</string>
+    <string name="label_order_type">Order Type:</string>
     <string name="label_discount_percentage">Percentage Discount</string>
     <string name="label_discount_type">Discount Type</string>
+    <string name="label_distance">Distance</string>
+    <string name="label_duration">Duration</string>
+    <string name="label_traffic">Traffic</string>
 
 
     <string name="msg_empty_order">Empty order can\'t be created</string>
@@ -84,6 +96,7 @@
     <string name="msg_punch_in_error">Failed to punch in.</string>
     <string name="msg_punch_out">Punch out successful.</string>
     <string name="msg_punch_out_error">Failed to punch out.</string>
+    <string name="msg_no_permission">You don\'t have permission.</string>
 
     <string name="keyboard_q" translatable="false">q</string>
     <string name="keyboard_w" translatable="false">w</string>
@@ -198,5 +211,8 @@
         <item>REPLACE</item>
         <item>COOK</item>
     </string-array>
-
+    <string-array name="staff_langs">
+        <item>English</item>
+        <item>Chinese</item>
+    </string-array>
 </resources>

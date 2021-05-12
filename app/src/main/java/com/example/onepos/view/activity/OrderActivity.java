@@ -1,29 +1,22 @@
 package com.example.onepos.view.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.WindowManager;
+import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.onepos.model.CustomerOrder;
-import com.example.onepos.util.MLog;
 import com.example.onepos.view.fragment.CustomerInfoFragment;
+import com.example.onepos.view.fragment.MapDialogFragment;
 import com.example.onepos.view.fragment.OrderFragment;
 import com.example.onepos.viewmodel.OrderViewModel;
 import com.example.onepos.viewmodel.ViewModelFactory;
 
 import javax.inject.Inject;
-
-import dagger.android.AndroidInjection;
-import io.reactivex.Completable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.internal.schedulers.SchedulerPoolFactory;
-import io.reactivex.schedulers.Schedulers;
 
 
 //TODO move some listeners to their own fragments
@@ -51,6 +44,7 @@ public class OrderActivity extends BaseActivity<OrderViewModel> {
             loadFragment(orderType, mode);
         }
     }
+
 
     @Override
     void initLayout() {
@@ -110,5 +104,10 @@ public class OrderActivity extends BaseActivity<OrderViewModel> {
         }
         else
             super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

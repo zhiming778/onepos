@@ -1,5 +1,6 @@
 package com.example.onepos.view.activity;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,7 +12,12 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.onepos.R;
 import com.example.onepos.model.Action;
 import com.example.onepos.model.CustomerOrder;
+import com.example.onepos.model.api.PosRetrofit;
+import com.example.onepos.model.api.RemoteDataSource;
+import com.example.onepos.util.MLog;
 import com.example.onepos.viewmodel.MainViewModel;
+
+import java.io.IOException;
 
 public class MainActivity extends BaseActivity<MainViewModel> implements View.OnClickListener {
 
@@ -77,25 +83,18 @@ public class MainActivity extends BaseActivity<MainViewModel> implements View.On
             }
             case R.id.btn_office:{
                 showPasswordDialog(MainViewModel.class, Action.SETTING, (flag)->{
-                    startActivity(new Intent(this, OfficeActivity.class));
+                    changeLanguage();
+                    Intent intent = new Intent(this, OfficeActivity.class);
+                    intent.putExtra(EXTRA_STAFF, viewModel.getStaff());
+                    startActivity(intent);
                 });
                 break;
             }
             case R.id.btn_punch_in:
-                showPasswordDialog(MainViewModel.class, Action.PUNCH_IN, (flag)->{
-                    if (flag==0)
-                        Toast.makeText(this, R.string.msg_punch_in, Toast.LENGTH_SHORT).show();
-                    if (flag==1)
-                        Toast.makeText(this, R.string.msg_punch_in_error, Toast.LENGTH_SHORT).show();
-                });
+                showPasswordDialog(MainViewModel.class, Action.PUNCH_IN, null);
                 break;
             case R.id.btn_punch_out:{
-                showPasswordDialog(MainViewModel.class, Action.PUNCH_OUT, (flag)->{
-                    if (flag==2)
-                        Toast.makeText(this, R.string.msg_punch_out, Toast.LENGTH_SHORT).show();
-                    if (flag==3)
-                        Toast.makeText(this, R.string.msg_punch_out_error, Toast.LENGTH_SHORT).show();
-                });
+                showPasswordDialog(MainViewModel.class, Action.PUNCH_OUT, null);
                 break;
             }
             case R.id.btn_modify:{

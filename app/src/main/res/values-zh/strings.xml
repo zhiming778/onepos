@@ -25,11 +25,13 @@
     <string name="title_password_dialog">请输入密码</string>
     <string name="title_choose_birth">请选择生日</string>
     <string name="title_choose_address">请选择地址</string>
+    <string name="title_map_dialog">地图</string>
 
     <string name="btn_cancel">取消</string>
     <string name="btn_print">打印</string>
     <string name="btn_modifier">修改</string>
     <string name="btn_pay">付款</string>
+    <string name="btn_lang">切换英文</string>
     <string name="btn_plus">+</string>
     <string name="btn_minus">-</string>
     <string name="btn_punch_in">打卡上班</string>
@@ -44,16 +46,19 @@
     <string name="btn_return">&lt;---</string>
     <string name="btn_discount_type_order">订单</string>
     <string name="btn_discount_type_item">本项目</string>
-
+    <string name="btn_street">街道</string>
+    <string name="btn_delivery_fee">送餐费</string>
+    <string name="btn_reorder_item">重点此项</string>
+    <string name="btn_reorder_all">重点全部</string>
 
     <string name="label_phone_number">电话</string>
     <string name="label_name">姓名</string>
     <string name="label_birth">生日</string>
-    <string name="label_street">街道</string>
     <string name="label_address">地址</string>
     <string name="label_password">密码</string>
     <string name="label_title">职务</string>
     <string name="label_ssn">社安号</string>
+    <string name="label_lang">语言</string>
     <string name="label_apt_rm">房号</string>
     <string name="label_zipcode">邮编</string>
     <string name="label_city">城市</string>
@@ -61,9 +66,14 @@
     <string name="label_order_history">订单历史</string>
     <string name="label_total">总价:</string>
     <string name="label_tax">税:</string>
+    <string name="label_date">日期:</string>
+    <string name="label_order_type">订单类型:</string>
     <string name="label_subtotal">小计:</string>
     <string name="label_discount_percentage">折扣比例</string>
     <string name="label_discount_type">折扣类型</string>
+    <string name="label_distance">距离</string>
+    <string name="label_duration">时间</string>
+    <string name="label_traffic">交通</string>
 
 
     <string name="msg_empty_order">无法创建空订单</string>
@@ -72,6 +82,7 @@
     <string name="msg_punch_in_error">打卡上班失败.</string>
     <string name="msg_punch_out">打卡下班成功.</string>
     <string name="msg_punch_out_error">打卡下班失败.</string>
+    <string name="msg_no_permission">你没有权限.</string>
 
     <string-array name="navi_items">
         <item>餐厅信息</item>
@@ -129,5 +140,8 @@
         <item>替换</item>
         <item>烹调</item>
     </string-array>
-
+    <string-array name="staff_langs">
+        <item>英语</item>
+        <item>中文</item>
+    </string-array>
 </resources>
